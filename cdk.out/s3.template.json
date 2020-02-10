@@ -1,0 +1,25 @@
+{
+  "Resources": {
+    "images9BF4DCD5": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-images"
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/images/Resource"
+      }
+    }
+  }
+}

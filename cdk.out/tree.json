@@ -1,0 +1,33 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "s3": {
+        "id": "s3",
+        "path": "s3",
+        "children": {
+          "images": {
+            "id": "images",
+            "path": "s3/images",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/images/Resource"
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/images/Notifications"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

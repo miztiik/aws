@@ -1,0 +1,61 @@
+{
+  "version": "1.21.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "s3": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "s3.template.json"
+      },
+      "metadata": {
+        "/s3/images/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "images9BF4DCD5",
+            "trace": [
+              "new Bucket (C:\\Users\\bbrar\\AppData\\Local\\Temp\\2\\jsii-kernel-3wWQH1\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:342:26)",
+              "obj._wrapSandboxCode (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6666:49)",
+              "Kernel._wrapSandboxCode (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7131:20)",
+              "Kernel._create (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6666:26)",
+              "Kernel.create (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6419:21)",
+              "KernelHost.processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6191:28)",
+              "KernelHost.run (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:14)",
+              "processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:45)",
+              "KernelHost.processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6233:16)",
+              "KernelHost.run (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:14)",
+              "processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:45)",
+              "KernelHost.processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6233:16)",
+              "KernelHost.run (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:14)",
+              "processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:45)",
+              "KernelHost.processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6233:16)",
+              "KernelHost.run (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:14)",
+              "processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:45)",
+              "KernelHost.processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6233:16)",
+              "KernelHost.run (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:14)",
+              "processRequest (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6137:45)",
+              "promise.then.val (C:\\Users\\bbrar\\AppData\\Local\\Programs\\Python\\Python37-32\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:6218:21)"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "runtime": {
+    "libraries": {
+      "@aws-cdk/cx-api": "1.23.0",
+      "@aws-cdk/core": "1.23.0",
+      "@aws-cdk/region-info": "1.8.0",
+      "@aws-cdk/aws-iam": "1.8.0",
+      "@aws-cdk/aws-events": "1.8.0",
+      "@aws-cdk/aws-kms": "1.8.0",
+      "@aws-cdk/aws-s3": "1.8.0",
+      "jsii-runtime": "Python/3.7.4"
+    }
+  }
+}
