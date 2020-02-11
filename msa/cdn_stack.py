@@ -4,14 +4,14 @@ from aws_cdk import (
     core
 ) 
 
-class S3Stack(core.Stack):
+class CDNStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # The code that defines your stack goes here
         #prj_name = self.node.try_get_context("project_name")
-        
+        webAclId = self.node.try_get_context("web_acl_id")
         webHostingBucket = s3.Bucket(self, "webhosting-bucket",
             access_control=s3.BucketAccessControl.PRIVATE,
             encryption=s3.BucketEncryption.KMS_MANAGED
@@ -25,8 +25,9 @@ class S3Stack(core.Stack):
                     s3_bucket_source=webHostingBucket,
                     origin_access_identity=cdn.OriginAccessIdentity(self,'webhosting-origin')
                 )
-            )]
-
+            )],
+            web_acl_id=webAclId
         )
+        
         
             

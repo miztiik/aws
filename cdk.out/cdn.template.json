@@ -17,7 +17,7 @@
       "UpdateReplacePolicy": "Retain",
       "DeletionPolicy": "Retain",
       "Metadata": {
-        "aws:cdk:path": "s3/webhosting-bucket/Resource"
+        "aws:cdk:path": "cdn/webhosting-bucket/Resource"
       }
     },
     "webhostingbucketPolicy450E9E3A": {
@@ -71,7 +71,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "s3/webhosting-bucket/Policy/Resource"
+        "aws:cdk:path": "cdn/webhosting-bucket/Policy/Resource"
       }
     },
     "webhostingorigin4CF2E4E2": {
@@ -82,7 +82,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "s3/webhosting-origin/Resource"
+        "aws:cdk:path": "cdn/webhosting-origin/Resource"
       }
     },
     "webhostingcdnCFDistribution1D75AAA9": {
@@ -144,7 +144,7 @@
         }
       },
       "Metadata": {
-        "aws:cdk:path": "s3/webhosting-cdn/CFDistribution"
+        "aws:cdk:path": "cdn/webhosting-cdn/CFDistribution"
       }
     }
   }

@@ -8,95 +8,29 @@
         "id": "Tree",
         "path": "Tree"
       },
-      "s3": {
-        "id": "s3",
-        "path": "s3",
+      "cdn": {
+        "id": "cdn",
+        "path": "cdn",
         "children": {
           "webhosting-bucket": {
             "id": "webhosting-bucket",
-            "path": "s3/webhosting-bucket",
+            "path": "cdn/webhosting-bucket",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "s3/webhosting-bucket/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
-                  "aws:cdk:cloudformation:props": {
-                    "accessControl": "Private",
-                    "bucketEncryption": {
-                      "serverSideEncryptionConfiguration": [
-                        {
-                          "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
+                "path": "cdn/webhosting-bucket/Resource"
               },
               "Notifications": {
                 "id": "Notifications",
-                "path": "s3/webhosting-bucket/Notifications"
+                "path": "cdn/webhosting-bucket/Notifications"
               },
               "Policy": {
                 "id": "Policy",
-                "path": "s3/webhosting-bucket/Policy",
+                "path": "cdn/webhosting-bucket/Policy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "s3/webhosting-bucket/Policy/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
-                      "aws:cdk:cloudformation:props": {
-                        "bucket": {
-                          "Ref": "webhostingbucketB36D742D"
-                        },
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": [
-                                "s3:GetObject*",
-                                "s3:GetBucket*",
-                                "s3:List*"
-                              ],
-                              "Effect": "Allow",
-                              "Principal": {
-                                "CanonicalUser": {
-                                  "Fn::GetAtt": [
-                                    "webhostingorigin4CF2E4E2",
-                                    "S3CanonicalUserId"
-                                  ]
-                                }
-                              },
-                              "Resource": [
-                                {
-                                  "Fn::GetAtt": [
-                                    "webhostingbucketB36D742D",
-                                    "Arn"
-                                  ]
-                                },
-                                {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      {
-                                        "Fn::GetAtt": [
-                                          "webhostingbucketB36D742D",
-                                          "Arn"
-                                        ]
-                                      },
-                                      "/*"
-                                    ]
-                                  ]
-                                }
-                              ]
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        }
-                      }
-                    }
+                    "path": "cdn/webhosting-bucket/Policy/Resource"
                   }
                 }
               }
@@ -104,11 +38,11 @@
           },
           "webhosting-origin": {
             "id": "webhosting-origin",
-            "path": "s3/webhosting-origin",
+            "path": "cdn/webhosting-origin",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "s3/webhosting-origin/Resource",
+                "path": "cdn/webhosting-origin/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
                   "aws:cdk:cloudformation:props": {
@@ -122,11 +56,11 @@
           },
           "webhosting-cdn": {
             "id": "webhosting-cdn",
-            "path": "s3/webhosting-cdn",
+            "path": "cdn/webhosting-cdn",
             "children": {
               "CFDistribution": {
                 "id": "CFDistribution",
-                "path": "s3/webhosting-cdn/CFDistribution",
+                "path": "cdn/webhosting-cdn/CFDistribution",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::CloudFront::Distribution",
                   "aws:cdk:cloudformation:props": {
@@ -136,6 +70,7 @@
                       "httpVersion": "http2",
                       "priceClass": "PriceClass_100",
                       "ipv6Enabled": true,
+                      "webAclId": "0dd41cae-5896-4f03-b9c6-50faab8c6bcc",
                       "origins": [
                         {
                           "id": "origin1",
@@ -187,45 +122,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "tests3": {
-        "id": "tests3",
-        "path": "tests3",
-        "children": {
-          "webhosting-bucket": {
-            "id": "webhosting-bucket",
-            "path": "tests3/webhosting-bucket",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "tests3/webhosting-bucket/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
-                  "aws:cdk:cloudformation:props": {
-                    "accessControl": "Private",
-                    "bucketEncryption": {
-                      "serverSideEncryptionConfiguration": [
-                        {
-                          "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              },
-              "Notifications": {
-                "id": "Notifications",
-                "path": "tests3/webhosting-bucket/Notifications"
-              }
-            }
-          },
-          "test-s3bucket": {
-            "id": "test-s3bucket",
-            "path": "tests3/test-s3bucket"
           }
         }
       }
