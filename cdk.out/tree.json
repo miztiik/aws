@@ -12,19 +12,220 @@
         "id": "s3",
         "path": "s3",
         "children": {
-          "images": {
-            "id": "images",
-            "path": "s3/images",
+          "webhosting-bucket": {
+            "id": "webhosting-bucket",
+            "path": "s3/webhosting-bucket",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "s3/images/Resource"
+                "path": "s3/webhosting-bucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "Private",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
               },
               "Notifications": {
                 "id": "Notifications",
-                "path": "s3/images/Notifications"
+                "path": "s3/webhosting-bucket/Notifications"
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "s3/webhosting-bucket/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "s3/webhosting-bucket/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "webhostingbucketB36D742D"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:GetObject*",
+                                "s3:GetBucket*",
+                                "s3:List*"
+                              ],
+                              "Effect": "Allow",
+                              "Principal": {
+                                "CanonicalUser": {
+                                  "Fn::GetAtt": [
+                                    "webhostingorigin4CF2E4E2",
+                                    "S3CanonicalUserId"
+                                  ]
+                                }
+                              },
+                              "Resource": [
+                                {
+                                  "Fn::GetAtt": [
+                                    "webhostingbucketB36D742D",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "webhostingbucketB36D742D",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
+          },
+          "webhosting-origin": {
+            "id": "webhosting-origin",
+            "path": "s3/webhosting-origin",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/webhosting-origin/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+                  "aws:cdk:cloudformation:props": {
+                    "cloudFrontOriginAccessIdentityConfig": {
+                      "comment": "Allows CloudFront to reach the bucket"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "webhosting-cdn": {
+            "id": "webhosting-cdn",
+            "path": "s3/webhosting-cdn",
+            "children": {
+              "CFDistribution": {
+                "id": "CFDistribution",
+                "path": "s3/webhosting-cdn/CFDistribution",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFront::Distribution",
+                  "aws:cdk:cloudformation:props": {
+                    "distributionConfig": {
+                      "enabled": true,
+                      "defaultRootObject": "index.html",
+                      "httpVersion": "http2",
+                      "priceClass": "PriceClass_100",
+                      "ipv6Enabled": true,
+                      "origins": [
+                        {
+                          "id": "origin1",
+                          "domainName": {
+                            "Fn::GetAtt": [
+                              "webhostingbucketB36D742D",
+                              "RegionalDomainName"
+                            ]
+                          },
+                          "s3OriginConfig": {
+                            "originAccessIdentity": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "origin-access-identity/cloudfront/",
+                                  {
+                                    "Ref": "webhostingorigin4CF2E4E2"
+                                  }
+                                ]
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "defaultCacheBehavior": {
+                        "allowedMethods": [
+                          "GET",
+                          "HEAD"
+                        ],
+                        "cachedMethods": [
+                          "GET",
+                          "HEAD"
+                        ],
+                        "compress": true,
+                        "forwardedValues": {
+                          "queryString": false,
+                          "cookies": {
+                            "forward": "none"
+                          }
+                        },
+                        "targetOriginId": "origin1",
+                        "viewerProtocolPolicy": "redirect-to-https"
+                      },
+                      "viewerCertificate": {
+                        "cloudFrontDefaultCertificate": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "tests3": {
+        "id": "tests3",
+        "path": "tests3",
+        "children": {
+          "webhosting-bucket": {
+            "id": "webhosting-bucket",
+            "path": "tests3/webhosting-bucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "tests3/webhosting-bucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "Private",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "tests3/webhosting-bucket/Notifications"
+              }
+            }
+          },
+          "test-s3bucket": {
+            "id": "test-s3bucket",
+            "path": "tests3/test-s3bucket"
           }
         }
       }

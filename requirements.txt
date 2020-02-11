@@ -1,3 +1,5 @@
 aws-cdk.aws-lambda
 aws-cdk.aws-s3
 aws-cdk.core
+aws-cdk.aws-cloudfront
+aws-cdk.aws-waf

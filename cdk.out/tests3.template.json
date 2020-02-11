@@ -1,0 +1,37 @@
+{
+  "Resources": {
+    "webhostingbucketB36D742D": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "tests3/webhosting-bucket/Resource"
+      }
+    }
+  },
+  "Outputs": {
+    "tests3bucket": {
+      "Value": {
+        "Fn::GetAtt": [
+          "webhostingbucketB36D742D",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "tests3"
+      }
+    }
+  }
+}
