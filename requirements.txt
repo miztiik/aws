@@ -3,3 +3,6 @@ aws-cdk.aws-s3
 aws-cdk.core
 aws-cdk.aws-cloudfront
 aws-cdk.aws-waf
+aws-cdk.aws-rds
+aws-cdk.aws-ec2
+aws-cdk.aws-kms

@@ -1,0 +1,156 @@
+{
+  "Resources": {
+    "bastionSGB70CC2F3": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for Public Access",
+        "GroupName": "BastionHostSG",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "SSH Access",
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "ToPort": 22
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "ec2/bastionSG/Resource"
+      }
+    },
+    "bastionInstanceRole7BAD4654": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "ec2.",
+                      {
+                        "Ref": "AWS::URLSuffix"
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "bastion"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ec2/bastion/InstanceRole/Resource"
+      }
+    },
+    "bastionInstanceProfileBF7A08EB": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "bastionInstanceRole7BAD4654"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ec2/bastion/InstanceProfile"
+      }
+    },
+    "bastion34F27305": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "IamInstanceProfile": {
+          "Ref": "bastionInstanceProfileBF7A08EB"
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+        },
+        "InstanceType": "t2.micro",
+        "KeyName": "bastion",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "bastionSGB70CC2F3",
+              "GroupId"
+            ]
+          }
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevPublicSubnet1SubnetAA5BC86BD59B6EF2"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "bastion"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash"
+        }
+      },
+      "DependsOn": [
+        "bastionInstanceRole7BAD4654"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "ec2/bastion/Resource"
+      }
+    }
+  },
+  "Parameters": {
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2"
+    }
+  },
+  "Outputs": {
+    "bastionhost": {
+      "Value": {
+        "Fn::GetAtt": [
+          "bastionSGB70CC2F3",
+          "GroupId"
+        ]
+      }
+    },
+    "ExportsOutputFnGetAttbastionSGB70CC2F3GroupId94E4D7D7": {
+      "Value": {
+        "Fn::GetAtt": [
+          "bastionSGB70CC2F3",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": "ec2:ExportsOutputFnGetAttbastionSGB70CC2F3GroupId94E4D7D7"
+      }
+    }
+  }
+}

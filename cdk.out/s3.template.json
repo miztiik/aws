@@ -1,9 +1,9 @@
 {
   "Resources": {
-    "webhostingbucketB36D742D": {
+    "lambdapackagesD27734A8": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "Private",
+        "AccessControl": "BucketOwnerFullControl",
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
             {
@@ -12,6 +12,100 @@
               }
             }
           ]
+        },
+        "BucketName": "msa-dev-lambda-deploy-packages",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/lambda-packages/Resource"
+      }
+    },
+    "images9BF4DCD5": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-images",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/images/Resource"
+      }
+    },
+    "accesslogsC1A401D5": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-accesslogs",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/accesslogs/Resource"
+      }
+    },
+    "webhostingbucketB36D742D": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-website-hosting",
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "accesslogsC1A401D5"
+          },
+          "LogFilePrefix": "logs/"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
         }
       },
       "UpdateReplacePolicy": "Retain",
@@ -20,131 +114,248 @@
         "aws:cdk:path": "s3/webhosting-bucket/Resource"
       }
     },
-    "webhostingbucketPolicy450E9E3A": {
-      "Type": "AWS::S3::BucketPolicy",
+    "frontend0151CE44": {
+      "Type": "AWS::S3::Bucket",
       "Properties": {
-        "Bucket": {
-          "Ref": "webhostingbucketB36D742D"
-        },
-        "PolicyDocument": {
-          "Statement": [
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
             {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*"
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "CanonicalUser": {
-                  "Fn::GetAtt": [
-                    "webhostingorigin4CF2E4E2",
-                    "S3CanonicalUserId"
-                  ]
-                }
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "webhostingbucketB36D742D",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "webhostingbucketB36D742D",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "s3/webhosting-bucket/Policy/Resource"
-      }
-    },
-    "webhostingorigin4CF2E4E2": {
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
-      "Properties": {
-        "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "Allows CloudFront to reach the bucket"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "s3/webhosting-origin/Resource"
-      }
-    },
-    "webhostingcdnCFDistribution1D75AAA9": {
-      "Type": "AWS::CloudFront::Distribution",
-      "Properties": {
-        "DistributionConfig": {
-          "DefaultCacheBehavior": {
-            "AllowedMethods": [
-              "GET",
-              "HEAD"
-            ],
-            "CachedMethods": [
-              "GET",
-              "HEAD"
-            ],
-            "Compress": true,
-            "ForwardedValues": {
-              "Cookies": {
-                "Forward": "none"
-              },
-              "QueryString": false
-            },
-            "TargetOriginId": "origin1",
-            "ViewerProtocolPolicy": "redirect-to-https"
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": [
-            {
-              "DomainName": {
-                "Fn::GetAtt": [
-                  "webhostingbucketB36D742D",
-                  "RegionalDomainName"
-                ]
-              },
-              "Id": "origin1",
-              "S3OriginConfig": {
-                "OriginAccessIdentity": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "origin-access-identity/cloudfront/",
-                      {
-                        "Ref": "webhostingorigin4CF2E4E2"
-                      }
-                    ]
-                  ]
-                }
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
               }
             }
-          ],
-          "PriceClass": "PriceClass_100",
-          "ViewerCertificate": {
-            "CloudFrontDefaultCertificate": true
-          },
-          "WebACLId": "0dd41cae-5896-4f03-b9c6-50faab8c6bcc"
+          ]
+        },
+        "BucketName": "msa-dev-frontend",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
         }
       },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
       "Metadata": {
-        "aws:cdk:path": "s3/webhosting-cdn/CFDistribution"
+        "aws:cdk:path": "s3/frontend/Resource"
+      }
+    },
+    "admin81D8EBF0": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-admin",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/admin/Resource"
+      }
+    },
+    "buildlogsE90A8579": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-build-logs",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "s3/build-logs/Resource"
+      }
+    },
+    "frontendartifacts3C735E10": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-frontend-artifacts",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "s3/frontend-artifacts/Resource"
+      }
+    },
+    "adminartifacts5D061F7C": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-admin-artifacts",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "s3/admin-artifacts/Resource"
+      }
+    },
+    "cloudtraillogsF78A69D6": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms"
+              }
+            }
+          ]
+        },
+        "BucketName": "msa-dev-cloudtrail-logs",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "s3/cloudtrail-logs/Resource"
+      }
+    }
+  },
+  "Outputs": {
+    "s3lambdaexport": {
+      "Value": {
+        "Ref": "lambdapackagesD27734A8"
+      },
+      "Export": {
+        "Name": "lambda-bucket"
+      }
+    },
+    "s3imagesexport": {
+      "Value": {
+        "Ref": "images9BF4DCD5"
+      },
+      "Export": {
+        "Name": "images-bucket"
+      }
+    },
+    "s3accesslogsexport": {
+      "Value": {
+        "Ref": "accesslogsC1A401D5"
+      },
+      "Export": {
+        "Name": "accesslogs-bucket"
+      }
+    },
+    "s3websiteexport": {
+      "Value": {
+        "Ref": "webhostingbucketB36D742D"
+      },
+      "Export": {
+        "Name": "webhosting-bucket"
+      }
+    },
+    "s3frontendexport": {
+      "Value": {
+        "Ref": "frontend0151CE44"
+      },
+      "Export": {
+        "Name": "frontend-bucket"
+      }
+    },
+    "s3adminexport": {
+      "Value": {
+        "Ref": "admin81D8EBF0"
+      },
+      "Export": {
+        "Name": "admin-bucket"
+      }
+    },
+    "s3buildlogsexport": {
+      "Value": {
+        "Ref": "buildlogsE90A8579"
+      },
+      "Export": {
+        "Name": "build-logs-bucket"
+      }
+    },
+    "s3frontendartifactsexport": {
+      "Value": {
+        "Ref": "frontendartifacts3C735E10"
+      },
+      "Export": {
+        "Name": "frontend-artifacts-bucket"
+      }
+    },
+    "s3adminartifactsexport": {
+      "Value": {
+        "Ref": "adminartifacts5D061F7C"
+      },
+      "Export": {
+        "Name": "admin-artifacts-bucket"
+      }
+    },
+    "s3cloudtrailexport": {
+      "Value": {
+        "Ref": "cloudtraillogsF78A69D6"
+      },
+      "Export": {
+        "Name": "cloudtrail-bucket"
       }
     }
   }

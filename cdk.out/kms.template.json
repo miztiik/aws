@@ -1,0 +1,163 @@
+{
+  "Resources": {
+    "dbkey7DD042FD": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:GenerateDataKey"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              },
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Description": "msa-dev-key-rds",
+        "EnableKeyRotation": true
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "kms/dbkey/Resource"
+      }
+    },
+    "dbkeyAlias1DD3FA5A": {
+      "Type": "AWS::KMS::Alias",
+      "Properties": {
+        "AliasName": "alias/msa-dev-key-rds",
+        "TargetKeyId": {
+          "Fn::GetAtt": [
+            "dbkey7DD042FD",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "kms/dbkey/Alias/Resource"
+      }
+    },
+    "lambdakey08903E42": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:GenerateDataKey"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              },
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Description": "msa-dev-key-lambda",
+        "EnableKeyRotation": true
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "kms/lambdakey/Resource"
+      }
+    },
+    "lambdakeyAlias3B398FCA": {
+      "Type": "AWS::KMS::Alias",
+      "Properties": {
+        "AliasName": "alias/msa-dev-key-lambda",
+        "TargetKeyId": {
+          "Fn::GetAtt": [
+            "lambdakey08903E42",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "kms/lambdakey/Alias/Resource"
+      }
+    }
+  },
+  "Outputs": {
+    "rdskeyexport": {
+      "Value": {
+        "Fn::GetAtt": [
+          "dbkey7DD042FD",
+          "Arn"
+        ]
+      }
+    },
+    "ExportsOutputFnGetAttdbkey7DD042FDArn4BEAD101": {
+      "Value": {
+        "Fn::GetAtt": [
+          "dbkey7DD042FD",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "kms:ExportsOutputFnGetAttdbkey7DD042FDArn4BEAD101"
+      }
+    }
+  }
+}

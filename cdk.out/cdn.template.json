@@ -1,79 +1,5 @@
 {
   "Resources": {
-    "webhostingbucketB36D742D": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "AccessControl": "Private",
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "aws:kms"
-              }
-            }
-          ]
-        }
-      },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
-      "Metadata": {
-        "aws:cdk:path": "cdn/webhosting-bucket/Resource"
-      }
-    },
-    "webhostingbucketPolicy450E9E3A": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "webhostingbucketB36D742D"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*"
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "CanonicalUser": {
-                  "Fn::GetAtt": [
-                    "webhostingorigin4CF2E4E2",
-                    "S3CanonicalUserId"
-                  ]
-                }
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "webhostingbucketB36D742D",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "webhostingbucketB36D742D",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "cdn/webhosting-bucket/Policy/Resource"
-      }
-    },
     "webhostingorigin4CF2E4E2": {
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
       "Properties": {
@@ -115,9 +41,21 @@
           "Origins": [
             {
               "DomainName": {
-                "Fn::GetAtt": [
-                  "webhostingbucketB36D742D",
-                  "RegionalDomainName"
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::ImportValue": "webhosting-bucket"
+                    },
+                    ".s3.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
                 ]
               },
               "Id": "origin1",

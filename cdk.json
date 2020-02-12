@@ -2,6 +2,7 @@
   "app": "python app.py",
   "context":{
       "project_name": "msa",
+      "env": "dev",
       "web_acl_id": "0dd41cae-5896-4f03-b9c6-50faab8c6bcc"
   }
 }

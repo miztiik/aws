@@ -1,0 +1,173 @@
+{
+  "Resources": {
+    "DevMySQLSubnetsB4D1A9C3": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Subnets for Dev_MySQL database",
+        "SubnetIds": [
+          {
+            "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevDBSubnet1Subnet5E1C4C58C996DFE2"
+          },
+          {
+            "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevDBSubnet2SubnetD17E2DD3C79E8CB0"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/Subnets"
+      }
+    },
+    "DevMySQLSecurityGroup853EE0CB": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "RDS security group",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/SecurityGroup/Resource"
+      }
+    },
+    "DevMySQLSecurityGroupfromrdssgidBF2ADF68IndirectPort64BA3DF4": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "IpProtocol": "tcp",
+        "Description": "Access from Bastion",
+        "FromPort": {
+          "Fn::GetAtt": [
+            "DevMySQL4951FA01",
+            "Endpoint.Port"
+          ]
+        },
+        "GroupId": {
+          "Fn::GetAtt": [
+            "DevMySQLSecurityGroup853EE0CB",
+            "GroupId"
+          ]
+        },
+        "SourceSecurityGroupId": {
+          "Fn::ImportValue": "ec2:ExportsOutputFnGetAttbastionSGB70CC2F3GroupId94E4D7D7"
+        },
+        "ToPort": {
+          "Fn::GetAtt": [
+            "DevMySQL4951FA01",
+            "Endpoint.Port"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/SecurityGroup/from rdssgidBF2ADF68:{IndirectPort}"
+      }
+    },
+    "DevMySQLSecret14769268": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "GenerateSecretString": {
+          "ExcludeCharacters": "\"@/\\",
+          "GenerateStringKey": "password",
+          "PasswordLength": 30,
+          "SecretStringTemplate": "{\"username\":\"admin\"}"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/Secret/Resource"
+      }
+    },
+    "DevMySQLSecretAttachment983F4C78": {
+      "Type": "AWS::SecretsManager::SecretTargetAttachment",
+      "Properties": {
+        "SecretId": {
+          "Ref": "DevMySQLSecret14769268"
+        },
+        "TargetId": {
+          "Ref": "DevMySQL4951FA01"
+        },
+        "TargetType": "AWS::RDS::DBCluster"
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/Secret/Attachment/Resource"
+      }
+    },
+    "DevMySQL4951FA01": {
+      "Type": "AWS::RDS::DBCluster",
+      "Properties": {
+        "Engine": "aurora-mysql",
+        "DatabaseName": "msadev",
+        "DBClusterParameterGroupName": "default.aurora-mysql5.7",
+        "DBSubnetGroupName": {
+          "Ref": "DevMySQLSubnetsB4D1A9C3"
+        },
+        "EngineVersion": "5.7.12",
+        "KmsKeyId": {
+          "Fn::ImportValue": "kms:ExportsOutputFnGetAttdbkey7DD042FDArn4BEAD101"
+        },
+        "MasterUsername": {
+          "Fn::Join": [
+            "",
+            [
+              "{{resolve:secretsmanager:",
+              {
+                "Ref": "DevMySQLSecret14769268"
+              },
+              ":SecretString:username::}}"
+            ]
+          ]
+        },
+        "MasterUserPassword": {
+          "Fn::Join": [
+            "",
+            [
+              "{{resolve:secretsmanager:",
+              {
+                "Ref": "DevMySQLSecret14769268"
+              },
+              ":SecretString:password::}}"
+            ]
+          ]
+        },
+        "StorageEncrypted": true,
+        "VpcSecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "DevMySQLSecurityGroup853EE0CB",
+              "GroupId"
+            ]
+          }
+        ]
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/Resource"
+      }
+    },
+    "DevMySQLInstance1D0BC4A0C": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "DBInstanceClass": "db.t3.medium",
+        "DBClusterIdentifier": {
+          "Ref": "DevMySQL4951FA01"
+        },
+        "DBSubnetGroupName": {
+          "Ref": "DevMySQLSubnetsB4D1A9C3"
+        },
+        "Engine": "aurora-mysql",
+        "EngineVersion": "5.7.12",
+        "PubliclyAccessible": false
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/Instance1"
+      }
+    }
+  }
+}

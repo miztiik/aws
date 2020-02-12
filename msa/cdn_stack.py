@@ -6,28 +6,31 @@ from aws_cdk import (
 
 class CDNStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str, s3bucket, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        # The code that defines your stack goes here
-        #prj_name = self.node.try_get_context("project_name")
+        bucketName = s3.Bucket.from_bucket_name(self,"s3bucket",s3bucket)
         webAclId = self.node.try_get_context("web_acl_id")
-        webHostingBucket = s3.Bucket(self, "webhosting-bucket",
-            access_control=s3.BucketAccessControl.PRIVATE,
-            encryption=s3.BucketEncryption.KMS_MANAGED
-        )
-        #myBucket = core.Fn.import_value('tests3')
-        
-        webDistribution = cdn.CloudFrontWebDistribution(self,"webhosting-cdn",
+
+        cdn.CloudFrontWebDistribution(self,"webhosting-cdn",
             origin_configs=[cdn.SourceConfiguration(
-                behaviors=[cdn.Behavior(is_default_behavior=True)],
+                behaviors=[
+                    cdn.Behavior(is_default_behavior=True)
+                    #cdn.Behavior(is_default_behavior=False,path_pattern="/img/")
+                ],
                 s3_origin_source=cdn.S3OriginConfig(
-                    s3_bucket_source=webHostingBucket,
-                    origin_access_identity=cdn.OriginAccessIdentity(self,'webhosting-origin')
-                )
+                    s3_bucket_source=bucketName,
+                    origin_access_identity=cdn.OriginAccessIdentity(self,'webhosting-origin'),
+                    
+                ),
             )],
             web_acl_id=webAclId
         )
+        
+        #TODO
+        #ACM Cert
+
+        
         
         
             

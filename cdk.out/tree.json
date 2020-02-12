@@ -8,33 +8,425 @@
         "id": "Tree",
         "path": "Tree"
       },
+      "s3": {
+        "id": "s3",
+        "path": "s3",
+        "children": {
+          "lambda-packages": {
+            "id": "lambda-packages",
+            "path": "s3/lambda-packages",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/lambda-packages/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-lambda-deploy-packages",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/lambda-packages/Notifications"
+              }
+            }
+          },
+          "s3-lambda-export": {
+            "id": "s3-lambda-export",
+            "path": "s3/s3-lambda-export"
+          },
+          "images": {
+            "id": "images",
+            "path": "s3/images",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/images/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-images",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/images/Notifications"
+              }
+            }
+          },
+          "s3-images-export": {
+            "id": "s3-images-export",
+            "path": "s3/s3-images-export"
+          },
+          "accesslogs": {
+            "id": "accesslogs",
+            "path": "s3/accesslogs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/accesslogs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "LogDeliveryWrite",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-accesslogs",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/accesslogs/Notifications"
+              }
+            }
+          },
+          "s3-accesslogs-export": {
+            "id": "s3-accesslogs-export",
+            "path": "s3/s3-accesslogs-export"
+          },
+          "webhosting-bucket": {
+            "id": "webhosting-bucket",
+            "path": "s3/webhosting-bucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/webhosting-bucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-website-hosting",
+                    "loggingConfiguration": {
+                      "destinationBucketName": {
+                        "Ref": "accesslogsC1A401D5"
+                      },
+                      "logFilePrefix": "logs/"
+                    },
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/webhosting-bucket/Notifications"
+              }
+            }
+          },
+          "s3-website-export": {
+            "id": "s3-website-export",
+            "path": "s3/s3-website-export"
+          },
+          "frontend": {
+            "id": "frontend",
+            "path": "s3/frontend",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/frontend/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-frontend",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/frontend/Notifications"
+              }
+            }
+          },
+          "s3-frontend-export": {
+            "id": "s3-frontend-export",
+            "path": "s3/s3-frontend-export"
+          },
+          "admin": {
+            "id": "admin",
+            "path": "s3/admin",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/admin/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-admin",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/admin/Notifications"
+              }
+            }
+          },
+          "s3-admin-export": {
+            "id": "s3-admin-export",
+            "path": "s3/s3-admin-export"
+          },
+          "build-logs": {
+            "id": "build-logs",
+            "path": "s3/build-logs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/build-logs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-build-logs",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/build-logs/Notifications"
+              }
+            }
+          },
+          "s3-build-logs-export": {
+            "id": "s3-build-logs-export",
+            "path": "s3/s3-build-logs-export"
+          },
+          "frontend-artifacts": {
+            "id": "frontend-artifacts",
+            "path": "s3/frontend-artifacts",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/frontend-artifacts/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-frontend-artifacts",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/frontend-artifacts/Notifications"
+              }
+            }
+          },
+          "s3-frontend-artifacts-export": {
+            "id": "s3-frontend-artifacts-export",
+            "path": "s3/s3-frontend-artifacts-export"
+          },
+          "admin-artifacts": {
+            "id": "admin-artifacts",
+            "path": "s3/admin-artifacts",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/admin-artifacts/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-admin-artifacts",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/admin-artifacts/Notifications"
+              }
+            }
+          },
+          "s3-admin-artifacts-export": {
+            "id": "s3-admin-artifacts-export",
+            "path": "s3/s3-admin-artifacts-export"
+          },
+          "cloudtrail-logs": {
+            "id": "cloudtrail-logs",
+            "path": "s3/cloudtrail-logs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "s3/cloudtrail-logs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "accessControl": "BucketOwnerFullControl",
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "aws:kms"
+                          }
+                        }
+                      ]
+                    },
+                    "bucketName": "msa-dev-cloudtrail-logs",
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "s3/cloudtrail-logs/Notifications"
+              }
+            }
+          },
+          "s3-cloudtrail-export": {
+            "id": "s3-cloudtrail-export",
+            "path": "s3/s3-cloudtrail-export"
+          }
+        }
+      },
       "cdn": {
         "id": "cdn",
         "path": "cdn",
         "children": {
-          "webhosting-bucket": {
-            "id": "webhosting-bucket",
-            "path": "cdn/webhosting-bucket",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "cdn/webhosting-bucket/Resource"
-              },
-              "Notifications": {
-                "id": "Notifications",
-                "path": "cdn/webhosting-bucket/Notifications"
-              },
-              "Policy": {
-                "id": "Policy",
-                "path": "cdn/webhosting-bucket/Policy",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "cdn/webhosting-bucket/Policy/Resource"
-                  }
-                }
-              }
-            }
+          "s3bucket": {
+            "id": "s3bucket",
+            "path": "cdn/s3bucket"
           },
           "webhosting-origin": {
             "id": "webhosting-origin",
@@ -75,9 +467,21 @@
                         {
                           "id": "origin1",
                           "domainName": {
-                            "Fn::GetAtt": [
-                              "webhostingbucketB36D742D",
-                              "RegionalDomainName"
+                            "Fn::Join": [
+                              "",
+                              [
+                                {
+                                  "Fn::ImportValue": "webhosting-bucket"
+                                },
+                                ".s3.",
+                                {
+                                  "Ref": "AWS::Region"
+                                },
+                                ".",
+                                {
+                                  "Ref": "AWS::URLSuffix"
+                                }
+                              ]
                             ]
                           },
                           "s3OriginConfig": {
@@ -122,6 +526,1275 @@
                 }
               }
             }
+          }
+        }
+      },
+      "vpc": {
+        "id": "vpc",
+        "path": "vpc",
+        "children": {
+          "devVPC": {
+            "id": "devVPC",
+            "path": "vpc/devVPC",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "vpc/devVPC/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                  "aws:cdk:cloudformation:props": {
+                    "cidrBlock": "172.32.0.0/16",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "instanceTenancy": "default",
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "vpc/devVPC"
+                      }
+                    ]
+                  }
+                }
+              },
+              "Dev-PublicSubnet1": {
+                "id": "Dev-PublicSubnet1",
+                "path": "vpc/devVPC/Dev-PublicSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.0.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet1"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPublicSubnet1RouteTable55627C44"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPublicSubnet1SubnetAA5BC86B"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPublicSubnet1RouteTable55627C44"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "devVPCIGW3A5029B7"
+                        }
+                      }
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "vpc/devVPC/Dev-PublicSubnet1/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "devVPCDevPublicSubnet1EIP6ACEF0E7",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPublicSubnet1SubnetAA5BC86B"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "Dev-PublicSubnet2": {
+                "id": "Dev-PublicSubnet2",
+                "path": "vpc/devVPC/Dev-PublicSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.1.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet2"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPublicSubnet2RouteTable511F76D0"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPublicSubnet2SubnetF641F9CE"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPublicSubnet2RouteTable511F76D0"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "devVPCIGW3A5029B7"
+                        }
+                      }
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "vpc/devVPC/Dev-PublicSubnet2/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "devVPCDevPublicSubnet2EIP72E80A11",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPublicSubnet2SubnetF641F9CE"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PublicSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "Dev-PrivateSubnet1": {
+                "id": "Dev-PrivateSubnet1",
+                "path": "vpc/devVPC/Dev-PrivateSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.2.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PrivateSubnet1"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet1/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PrivateSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPrivateSubnet1RouteTableA108B8D4"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPrivateSubnet1SubnetA74E46AD"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPrivateSubnet1RouteTableA108B8D4"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "devVPCDevPublicSubnet1NATGatewayA16F04DB"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Dev-PrivateSubnet2": {
+                "id": "Dev-PrivateSubnet2",
+                "path": "vpc/devVPC/Dev-PrivateSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.3.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PrivateSubnet2"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet2/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-PrivateSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPrivateSubnet2RouteTableB852AE40"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevPrivateSubnet2Subnet161A8676"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "vpc/devVPC/Dev-PrivateSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevPrivateSubnet2RouteTableB852AE40"
+                        },
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "devVPCDevPublicSubnet2NATGateway9E4D2FB7"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Dev-DBSubnet1": {
+                "id": "Dev-DBSubnet1",
+                "path": "vpc/devVPC/Dev-DBSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-DBSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.4.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-DBSubnet1"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-DB"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Isolated"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-DBSubnet1/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-DBSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-DBSubnet1"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-DBSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevDBSubnet1RouteTableFE173717"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevDBSubnet1Subnet5E1C4C58"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Dev-DBSubnet2": {
+                "id": "Dev-DBSubnet2",
+                "path": "vpc/devVPC/Dev-DBSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "vpc/devVPC/Dev-DBSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "172.32.5.0/24",
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-DBSubnet2"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Dev-DB"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Isolated"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "vpc/devVPC/Dev-DBSubnet2/Acl"
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "vpc/devVPC/Dev-DBSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "devVPC524BF54C"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "vpc/devVPC/Dev-DBSubnet2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "vpc/devVPC/Dev-DBSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "devVPCDevDBSubnet2RouteTableB8785CD4"
+                        },
+                        "subnetId": {
+                          "Ref": "devVPCDevDBSubnet2SubnetD17E2DD3"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "IGW": {
+                "id": "IGW",
+                "path": "vpc/devVPC/IGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "vpc/devVPC"
+                      }
+                    ]
+                  }
+                }
+              },
+              "VPCGW": {
+                "id": "VPCGW",
+                "path": "vpc/devVPC/VPCGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                  "aws:cdk:cloudformation:props": {
+                    "vpcId": {
+                      "Ref": "devVPC524BF54C"
+                    },
+                    "internetGatewayId": {
+                      "Ref": "devVPCIGW3A5029B7"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "vpc/Exports",
+            "children": {
+              "Output{\"Ref\":\"devVPCDevDBSubnet1Subnet5E1C4C58\"}": {
+                "id": "Output{\"Ref\":\"devVPCDevDBSubnet1Subnet5E1C4C58\"}",
+                "path": "vpc/Exports/Output{\"Ref\":\"devVPCDevDBSubnet1Subnet5E1C4C58\"}"
+              },
+              "Output{\"Ref\":\"devVPCDevDBSubnet2SubnetD17E2DD3\"}": {
+                "id": "Output{\"Ref\":\"devVPCDevDBSubnet2SubnetD17E2DD3\"}",
+                "path": "vpc/Exports/Output{\"Ref\":\"devVPCDevDBSubnet2SubnetD17E2DD3\"}"
+              },
+              "Output{\"Ref\":\"devVPC524BF54C\"}": {
+                "id": "Output{\"Ref\":\"devVPC524BF54C\"}",
+                "path": "vpc/Exports/Output{\"Ref\":\"devVPC524BF54C\"}"
+              },
+              "Output{\"Ref\":\"devVPCDevPublicSubnet1SubnetAA5BC86B\"}": {
+                "id": "Output{\"Ref\":\"devVPCDevPublicSubnet1SubnetAA5BC86B\"}",
+                "path": "vpc/Exports/Output{\"Ref\":\"devVPCDevPublicSubnet1SubnetAA5BC86B\"}"
+              }
+            }
+          }
+        }
+      },
+      "kms": {
+        "id": "kms",
+        "path": "kms",
+        "children": {
+          "dbkey": {
+            "id": "dbkey",
+            "path": "kms/dbkey",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "kms/dbkey/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::KMS::Key",
+                  "aws:cdk:cloudformation:props": {
+                    "keyPolicy": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "kms:Create*",
+                            "kms:Describe*",
+                            "kms:Enable*",
+                            "kms:List*",
+                            "kms:Put*",
+                            "kms:Update*",
+                            "kms:Revoke*",
+                            "kms:Disable*",
+                            "kms:Get*",
+                            "kms:Delete*",
+                            "kms:ScheduleKeyDeletion",
+                            "kms:CancelKeyDeletion",
+                            "kms:GenerateDataKey"
+                          ],
+                          "Effect": "Allow",
+                          "Principal": {
+                            "AWS": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":root"
+                                ]
+                              ]
+                            }
+                          },
+                          "Resource": "*"
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "msa-dev-key-rds",
+                    "enableKeyRotation": true
+                  }
+                }
+              },
+              "Alias": {
+                "id": "Alias",
+                "path": "kms/dbkey/Alias",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "kms/dbkey/Alias/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::KMS::Alias",
+                      "aws:cdk:cloudformation:props": {
+                        "aliasName": "alias/msa-dev-key-rds",
+                        "targetKeyId": {
+                          "Fn::GetAtt": [
+                            "dbkey7DD042FD",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "lambdakey": {
+            "id": "lambdakey",
+            "path": "kms/lambdakey",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "kms/lambdakey/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::KMS::Key",
+                  "aws:cdk:cloudformation:props": {
+                    "keyPolicy": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "kms:Create*",
+                            "kms:Describe*",
+                            "kms:Enable*",
+                            "kms:List*",
+                            "kms:Put*",
+                            "kms:Update*",
+                            "kms:Revoke*",
+                            "kms:Disable*",
+                            "kms:Get*",
+                            "kms:Delete*",
+                            "kms:ScheduleKeyDeletion",
+                            "kms:CancelKeyDeletion",
+                            "kms:GenerateDataKey"
+                          ],
+                          "Effect": "Allow",
+                          "Principal": {
+                            "AWS": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":root"
+                                ]
+                              ]
+                            }
+                          },
+                          "Resource": "*"
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "msa-dev-key-lambda",
+                    "enableKeyRotation": true
+                  }
+                }
+              },
+              "Alias": {
+                "id": "Alias",
+                "path": "kms/lambdakey/Alias",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "kms/lambdakey/Alias/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::KMS::Alias",
+                      "aws:cdk:cloudformation:props": {
+                        "aliasName": "alias/msa-dev-key-lambda",
+                        "targetKeyId": {
+                          "Fn::GetAtt": [
+                            "lambdakey08903E42",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "rdskeyexport": {
+            "id": "rdskeyexport",
+            "path": "kms/rdskeyexport"
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "kms/Exports",
+            "children": {
+              "Output{\"Fn::GetAtt\":[\"dbkey7DD042FD\",\"Arn\"]}": {
+                "id": "Output{\"Fn::GetAtt\":[\"dbkey7DD042FD\",\"Arn\"]}",
+                "path": "kms/Exports/Output{\"Fn::GetAtt\":[\"dbkey7DD042FD\",\"Arn\"]}"
+              }
+            }
+          }
+        }
+      },
+      "ec2": {
+        "id": "ec2",
+        "path": "ec2",
+        "children": {
+          "bastionSG": {
+            "id": "bastionSG",
+            "path": "ec2/bastionSG",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ec2/bastionSG/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "SG for Public Access",
+                    "groupName": "BastionHostSG",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "tcp",
+                        "fromPort": 22,
+                        "toPort": 22,
+                        "description": "SSH Access"
+                      }
+                    ],
+                    "vpcId": {
+                      "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "bastion": {
+            "id": "bastion",
+            "path": "ec2/bastion",
+            "children": {
+              "InstanceRole": {
+                "id": "InstanceRole",
+                "path": "ec2/bastion/InstanceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ec2/bastion/InstanceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "ec2.",
+                                      {
+                                        "Ref": "AWS::URLSuffix"
+                                      }
+                                    ]
+                                  ]
+                                }
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "bastion"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "InstanceProfile": {
+                "id": "InstanceProfile",
+                "path": "ec2/bastion/InstanceProfile",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::InstanceProfile",
+                  "aws:cdk:cloudformation:props": {
+                    "roles": [
+                      {
+                        "Ref": "bastionInstanceRole7BAD4654"
+                      }
+                    ]
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ec2/bastion/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Instance",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": {
+                      "Fn::Select": [
+                        0,
+                        {
+                          "Fn::GetAZs": ""
+                        }
+                      ]
+                    },
+                    "iamInstanceProfile": {
+                      "Ref": "bastionInstanceProfileBF7A08EB"
+                    },
+                    "imageId": {
+                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+                    },
+                    "instanceType": "t2.micro",
+                    "keyName": "bastion",
+                    "securityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "bastionSGB70CC2F3",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevPublicSubnet1SubnetAA5BC86BD59B6EF2"
+                    },
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "bastion"
+                      }
+                    ],
+                    "userData": {
+                      "Fn::Base64": "#!/bin/bash"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "ec2/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter"
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "ec2/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118"
+          },
+          "bastionhost": {
+            "id": "bastionhost",
+            "path": "ec2/bastionhost"
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "ec2/Exports",
+            "children": {
+              "Output{\"Fn::GetAtt\":[\"bastionSGB70CC2F3\",\"GroupId\"]}": {
+                "id": "Output{\"Fn::GetAtt\":[\"bastionSGB70CC2F3\",\"GroupId\"]}",
+                "path": "ec2/Exports/Output{\"Fn::GetAtt\":[\"bastionSGB70CC2F3\",\"GroupId\"]}"
+              }
+            }
+          }
+        }
+      },
+      "rds": {
+        "id": "rds",
+        "path": "rds",
+        "children": {
+          "rdskey": {
+            "id": "rdskey",
+            "path": "rds/rdskey"
+          },
+          "paramter-group-msadev": {
+            "id": "paramter-group-msadev",
+            "path": "rds/paramter-group-msadev"
+          },
+          "Dev_MySQL": {
+            "id": "Dev_MySQL",
+            "path": "rds/Dev_MySQL",
+            "children": {
+              "Subnets": {
+                "id": "Subnets",
+                "path": "rds/Dev_MySQL/Subnets",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBSubnetGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "dbSubnetGroupDescription": "Subnets for Dev_MySQL database",
+                    "subnetIds": [
+                      {
+                        "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevDBSubnet1Subnet5E1C4C58C996DFE2"
+                      },
+                      {
+                        "Fn::ImportValue": "vpc:ExportsOutputRefdevVPCDevDBSubnet2SubnetD17E2DD3C79E8CB0"
+                      }
+                    ]
+                  }
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "rds/Dev_MySQL/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "rds/Dev_MySQL/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "RDS security group",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+                        }
+                      }
+                    }
+                  },
+                  "from rdssgidBF2ADF68:{IndirectPort}": {
+                    "id": "from rdssgidBF2ADF68:{IndirectPort}",
+                    "path": "rds/Dev_MySQL/SecurityGroup/from rdssgidBF2ADF68:{IndirectPort}",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                      "aws:cdk:cloudformation:props": {
+                        "ipProtocol": "tcp",
+                        "description": "Access from Bastion",
+                        "fromPort": {
+                          "Fn::GetAtt": [
+                            "DevMySQL4951FA01",
+                            "Endpoint.Port"
+                          ]
+                        },
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "DevMySQLSecurityGroup853EE0CB",
+                            "GroupId"
+                          ]
+                        },
+                        "sourceSecurityGroupId": {
+                          "Fn::ImportValue": "ec2:ExportsOutputFnGetAttbastionSGB70CC2F3GroupId94E4D7D7"
+                        },
+                        "toPort": {
+                          "Fn::GetAtt": [
+                            "DevMySQL4951FA01",
+                            "Endpoint.Port"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Secret": {
+                "id": "Secret",
+                "path": "rds/Dev_MySQL/Secret",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "rds/Dev_MySQL/Secret/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                      "aws:cdk:cloudformation:props": {
+                        "generateSecretString": {
+                          "passwordLength": 30,
+                          "secretStringTemplate": "{\"username\":\"admin\"}",
+                          "generateStringKey": "password",
+                          "excludeCharacters": "\"@/\\"
+                        }
+                      }
+                    }
+                  },
+                  "Attachment": {
+                    "id": "Attachment",
+                    "path": "rds/Dev_MySQL/Secret/Attachment",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "rds/Dev_MySQL/Secret/Attachment/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::SecretsManager::SecretTargetAttachment",
+                          "aws:cdk:cloudformation:props": {
+                            "secretId": {
+                              "Ref": "DevMySQLSecret14769268"
+                            },
+                            "targetId": {
+                              "Ref": "DevMySQL4951FA01"
+                            },
+                            "targetType": "AWS::RDS::DBCluster"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "rds/Dev_MySQL/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBCluster",
+                  "aws:cdk:cloudformation:props": {
+                    "engine": "aurora-mysql",
+                    "databaseName": "msadev",
+                    "dbClusterParameterGroupName": "default.aurora-mysql5.7",
+                    "dbSubnetGroupName": {
+                      "Ref": "DevMySQLSubnetsB4D1A9C3"
+                    },
+                    "engineVersion": "5.7.12",
+                    "kmsKeyId": {
+                      "Fn::ImportValue": "kms:ExportsOutputFnGetAttdbkey7DD042FDArn4BEAD101"
+                    },
+                    "masterUsername": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "{{resolve:secretsmanager:",
+                          {
+                            "Ref": "DevMySQLSecret14769268"
+                          },
+                          ":SecretString:username::}}"
+                        ]
+                      ]
+                    },
+                    "masterUserPassword": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "{{resolve:secretsmanager:",
+                          {
+                            "Ref": "DevMySQLSecret14769268"
+                          },
+                          ":SecretString:password::}}"
+                        ]
+                      ]
+                    },
+                    "storageEncrypted": true,
+                    "vpcSecurityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "DevMySQLSecurityGroup853EE0CB",
+                          "GroupId"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "Instance1": {
+                "id": "Instance1",
+                "path": "rds/Dev_MySQL/Instance1",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBInstance",
+                  "aws:cdk:cloudformation:props": {
+                    "dbInstanceClass": "db.t3.medium",
+                    "dbClusterIdentifier": {
+                      "Ref": "DevMySQL4951FA01"
+                    },
+                    "dbSubnetGroupName": {
+                      "Ref": "DevMySQLSubnetsB4D1A9C3"
+                    },
+                    "engine": "aurora-mysql",
+                    "engineVersion": "5.7.12",
+                    "publiclyAccessible": false
+                  }
+                }
+              }
+            }
+          },
+          "sgid": {
+            "id": "sgid",
+            "path": "rds/sgid"
           }
         }
       }
