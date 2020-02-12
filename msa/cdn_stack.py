@@ -12,7 +12,7 @@ class CDNStack(core.Stack):
         bucketName = s3.Bucket.from_bucket_name(self,"s3bucket",s3bucket)
         webAclId = self.node.try_get_context("web_acl_id")
 
-        cdn.CloudFrontWebDistribution(self,"webhosting-cdn",
+        cdnId = cdn.CloudFrontWebDistribution(self,"webhosting-cdn",
             origin_configs=[cdn.SourceConfiguration(
                 behaviors=[
                     cdn.Behavior(is_default_behavior=True)
@@ -26,7 +26,9 @@ class CDNStack(core.Stack):
             )],
             web_acl_id=webAclId
         )
-        
+        core.CfnOutput(self,'cdnid',
+            value=cdnId.distribution_id
+        )
         #TODO
         #ACM Cert
 

@@ -526,6 +526,10 @@
                 }
               }
             }
+          },
+          "cdnid": {
+            "id": "cdnid",
+            "path": "cdn/cdnid"
           }
         }
       },

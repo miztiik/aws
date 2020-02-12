@@ -85,5 +85,12 @@
         "aws:cdk:path": "cdn/webhosting-cdn/CFDistribution"
       }
     }
+  },
+  "Outputs": {
+    "cdnid": {
+      "Value": {
+        "Ref": "webhostingcdnCFDistribution1D75AAA9"
+      }
+    }
   }
 }
