@@ -15,7 +15,7 @@ class APIStack(core.Stack):
             endpoint_types=[apigw.EndpointType.REGIONAL],
             minimum_compression_size=1024,
             binary_media_types=["multipart/form-data"],
-            rest_api_name=prj_name+'-apigateway',
+            rest_api_name=prj_name+'-apigateway'
             
         )
         apigw.Method(self,'method1',

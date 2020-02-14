@@ -1,0 +1,491 @@
+{
+  "Resources": {
+    "buildtemplateRoleDB5A7929": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/buildtemplate/Role/Resource"
+      }
+    },
+    "buildtemplateRoleDefaultPolicyE6688EC3": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":logs:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":log-group:/aws/codebuild/",
+                      {
+                        "Ref": "buildtemplate367D7440"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":logs:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":log-group:/aws/codebuild/",
+                      {
+                        "Ref": "buildtemplate367D7440"
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "build-logs-bucket"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "build-logs-bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "buildtemplateRoleDefaultPolicyE6688EC3",
+        "Roles": [
+          {
+            "Ref": "buildtemplateRoleDB5A7929"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/buildtemplate/Role/DefaultPolicy/Resource"
+      }
+    },
+    "buildtemplate367D7440": {
+      "Type": "AWS::CodeBuild::Project",
+      "Properties": {
+        "Artifacts": {
+          "Type": "CODEPIPELINE"
+        },
+        "Environment": {
+          "ComputeType": "BUILD_GENERAL1_SMALL",
+          "EnvironmentVariables": [
+            {
+              "Name": "BUCKET",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Fn::ImportValue": "lambda-bucket"
+              }
+            }
+          ],
+          "Image": "aws/codebuild/standard:1.0",
+          "PrivilegedMode": false,
+          "Type": "LINUX_CONTAINER"
+        },
+        "ServiceRole": {
+          "Fn::GetAtt": [
+            "buildtemplateRoleDB5A7929",
+            "Arn"
+          ]
+        },
+        "Source": {
+          "BuildSpec": "buildspec.yaml",
+          "Type": "CODEPIPELINE"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/buildtemplate/Resource"
+      }
+    },
+    "pipelineRole55399C5D": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codepipeline.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Role/Resource"
+      }
+    },
+    "pipelineRoleDefaultPolicy668B05DE": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "build-logs-bucket"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "build-logs-bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "pipelineBuildTransformTemplateCodePipelineActionRoleB9C004C2",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "pipelineRoleDefaultPolicy668B05DE",
+        "Roles": [
+          {
+            "Ref": "pipelineRole55399C5D"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Role/DefaultPolicy/Resource"
+      }
+    },
+    "pipelineDBECAE49": {
+      "Type": "AWS::CodePipeline::Pipeline",
+      "Properties": {
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "pipelineRole55399C5D",
+            "Arn"
+          ]
+        },
+        "Stages": [
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Source",
+                  "Owner": "ThirdParty",
+                  "Provider": "GitHub",
+                  "Version": "1"
+                },
+                "Configuration": {
+                  "Owner": "nixsupport",
+                  "Repo": "serverless",
+                  "Branch": "master",
+                  "OAuthToken": "oauth_token",
+                  "PollForSourceChanges": false
+                },
+                "Name": "GitHubSource",
+                "OutputArtifacts": [
+                  {
+                    "Name": "source"
+                  }
+                ],
+                "RunOrder": 1
+              }
+            ],
+            "Name": "Source"
+          },
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Build",
+                  "Owner": "AWS",
+                  "Provider": "CodeBuild",
+                  "Version": "1"
+                },
+                "Configuration": {
+                  "ProjectName": {
+                    "Ref": "buildtemplate367D7440"
+                  }
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "source"
+                  }
+                ],
+                "Name": "TransformTemplate",
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "pipelineBuildTransformTemplateCodePipelineActionRoleB9C004C2",
+                    "Arn"
+                  ]
+                },
+                "RunOrder": 1
+              }
+            ],
+            "Name": "Build"
+          }
+        ],
+        "ArtifactStore": {
+          "Location": {
+            "Fn::ImportValue": "build-logs-bucket"
+          },
+          "Type": "S3"
+        },
+        "Name": "DeployLambdaFunctions"
+      },
+      "DependsOn": [
+        "pipelineRoleDefaultPolicy668B05DE",
+        "pipelineRole55399C5D"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Resource"
+      }
+    },
+    "pipelineSourceGitHubSourceWebhookResource0291F64C": {
+      "Type": "AWS::CodePipeline::Webhook",
+      "Properties": {
+        "Authentication": "GITHUB_HMAC",
+        "AuthenticationConfiguration": {
+          "SecretToken": "oauth_token"
+        },
+        "Filters": [
+          {
+            "JsonPath": "$.ref",
+            "MatchEquals": "refs/heads/{Branch}"
+          }
+        ],
+        "TargetAction": "GitHubSource",
+        "TargetPipeline": {
+          "Ref": "pipelineDBECAE49"
+        },
+        "TargetPipelineVersion": 1,
+        "RegisterWithThirdParty": true
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Source/GitHubSource/WebhookResource"
+      }
+    },
+    "pipelineBuildTransformTemplateCodePipelineActionRoleB9C004C2": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Build/TransformTemplate/CodePipelineActionRole/Resource"
+      }
+    },
+    "pipelineBuildTransformTemplateCodePipelineActionRoleDefaultPolicy59A98B17": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "buildtemplate367D7440",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "pipelineBuildTransformTemplateCodePipelineActionRoleDefaultPolicy59A98B17",
+        "Roles": [
+          {
+            "Ref": "pipelineBuildTransformTemplateCodePipelineActionRoleB9C004C2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/pipeline/Build/TransformTemplate/CodePipelineActionRole/DefaultPolicy/Resource"
+      }
+    }
+  }
+}

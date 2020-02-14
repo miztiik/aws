@@ -8,7 +8,8 @@ from msa.vpc_stack import VPCStack
 from msa.rds_stack import RDSStack
 from msa.ec2_stack import EC2Stack
 from msa.kms_stack import KMSStack
-from msa.apigateway_stack import APIStack
+#from msa.apigateway_stack import APIStack
+from msa.codepipeline import CodePipelineStack
 
 app = core.App()
 
@@ -19,5 +20,5 @@ kms_stack = KMSStack(app, "kms")
 ec2_stack = EC2Stack(app, "ec2", vpc=vpc_stack.vpc)
 rds_stack = RDSStack(app, "rds", vpc=vpc_stack.vpc, sg=ec2_stack.sg.security_group_id,kmskey=kms_stack.kms_rds.key_arn)
 #api_stack = APIStack(app, "apigw")
-
+codepipeline_stack = CodePipelineStack(app, "codepipeline", artifactbucket=core.Fn.import_value('lambda-bucket'),buildlogsbucket=core.Fn.import_value('build-logs-bucket'))
 app.synth()
