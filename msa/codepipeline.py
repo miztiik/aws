@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_codebuild as cb,
     aws_s3 as s3,
     aws_secretsmanager as sm,
+    aws_iam as iam,
     core
 ) 
 
@@ -22,13 +23,17 @@ class CodePipelineStack(core.Stack):
         buildlogs_bucket = s3.Bucket.from_bucket_name(self,'buildlogsbucket',buildlogsbucket)
 
         build_project = cb.PipelineProject(self,'buildtemplate',
-            build_spec=cb.BuildSpec.from_source_filename(
-                filename='buildspec.yaml'
-            ),
+            project_name="BuildFunction",
+            description="Transform Serverless Framework template to CFN template",
             environment=cb.BuildEnvironment(
+                build_image=cb.LinuxBuildImage.STANDARD_3_0,
                 environment_variables={
                     'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name)
-                }
+                },
+            ),
+            cache=cb.Cache.bucket(artifact_bucket,prefix='codebuild-cache'),
+            build_spec=cb.BuildSpec.from_source_filename(
+                filename='buildspec.yaml'
             )
         )
         oauthToken=core.SecretValue.plain_text('oauth_token')
@@ -66,6 +71,7 @@ class CodePipelineStack(core.Stack):
             ]
         )
         artifact_bucket.grant_read_write(pipeline.role)
+        
         #TODO
         #domain name
 

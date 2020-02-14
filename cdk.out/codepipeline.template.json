@@ -27,6 +27,50 @@
           "Statement": [
             {
               "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
@@ -154,7 +198,7 @@
               }
             }
           ],
-          "Image": "aws/codebuild/standard:1.0",
+          "Image": "aws/codebuild/standard:3.0",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
         },
@@ -167,7 +211,23 @@
         "Source": {
           "BuildSpec": "buildspec.yaml",
           "Type": "CODEPIPELINE"
-        }
+        },
+        "Cache": {
+          "Location": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::ImportValue": "lambda-bucket"
+                },
+                "codebuild-cache"
+              ]
+            ]
+          },
+          "Type": "S3"
+        },
+        "Description": "Transform Serverless Framework template to CFN template",
+        "Name": "BuildFunction"
       },
       "Metadata": {
         "aws:cdk:path": "codepipeline/buildtemplate/Resource"

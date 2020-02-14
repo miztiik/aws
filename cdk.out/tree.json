@@ -1264,7 +1264,9 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey"
+                            "kms:GenerateDataKey",
+                            "kms:TagResource",
+                            "kms:UntagResource"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1345,7 +1347,9 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey"
+                            "kms:GenerateDataKey",
+                            "kms:TagResource",
+                            "kms:UntagResource"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1857,6 +1861,50 @@
                               "Statement": [
                                 {
                                   "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject*",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":s3:::",
+                                          {
+                                            "Fn::ImportValue": "lambda-bucket"
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":s3:::",
+                                          {
+                                            "Fn::ImportValue": "lambda-bucket"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
                                     "logs:CreateLogGroup",
                                     "logs:CreateLogStream",
                                     "logs:PutLogEvents"
@@ -1980,7 +2028,7 @@
                     },
                     "environment": {
                       "type": "LINUX_CONTAINER",
-                      "image": "aws/codebuild/standard:1.0",
+                      "image": "aws/codebuild/standard:3.0",
                       "privilegedMode": false,
                       "computeType": "BUILD_GENERAL1_SMALL",
                       "environmentVariables": [
@@ -2002,7 +2050,23 @@
                     "source": {
                       "type": "CODEPIPELINE",
                       "buildSpec": "buildspec.yaml"
-                    }
+                    },
+                    "cache": {
+                      "type": "S3",
+                      "location": {
+                        "Fn::Join": [
+                          "/",
+                          [
+                            {
+                              "Fn::ImportValue": "lambda-bucket"
+                            },
+                            "codebuild-cache"
+                          ]
+                        ]
+                      }
+                    },
+                    "description": "Transform Serverless Framework template to CFN template",
+                    "name": "BuildFunction"
                   }
                 }
               }
