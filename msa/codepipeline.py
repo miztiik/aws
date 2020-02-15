@@ -5,6 +5,8 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_secretsmanager as sm,
     aws_iam as iam,
+    aws_ssm as ssm,
+    aws_cloudformation as cfn,
     core
 ) 
 
@@ -16,9 +18,6 @@ class CodePipelineStack(core.Stack):
         #prj_name = self.node.try_get_context("project_name")
         #env_name = self.node.try_get_context("env")
 
-        sourceOutput = cp.Artifact(artifact_name="source")
-        #buildOutput = cp.Artifact(artifact_name="output")
-        
         artifact_bucket = s3.Bucket.from_bucket_name(self,'artifactbucket',artifactbucket)
         buildlogs_bucket = s3.Bucket.from_bucket_name(self,'buildlogsbucket',buildlogsbucket)
 
@@ -32,48 +31,102 @@ class CodePipelineStack(core.Stack):
                 },
             ),
             cache=cb.Cache.bucket(artifact_bucket,prefix='codebuild-cache'),
-            build_spec=cb.BuildSpec.from_source_filename(
-                filename='buildspec.yaml'
-            )
+            build_spec=cb.BuildSpec.from_object({
+                'version': '0.2',
+                'phases': {
+                    'install': {
+                        'commands':[
+                            'echo "----INSTALL PHASE----" ',
+                            'npm install -g serverless',
+                            'npm install --save-dev serverless-sam',
+                            'pip install awscli'
+                        ]
+                    },
+                    'build': {
+                        'commands':[
+                            'echo "-----BUILD PHASE------"',
+                            'serverless sam export --output sam-template.yaml',
+                            'aws cloudformation package --template-file sam-template.yaml --s3-bucket $BUCKET --output-template packaged-template.yaml'
+                        ]
+                            
+                    },
+                    'post_build':{
+                        'commands': [
+                            'echo "-----POST BUILD PHASE-----" ',
+                            'echo "SAM packaging completed on `date` "'
+                        ]
+                    }
+
+                },
+                'artifacts': {
+                    'files': ['packaged-template.yaml'],
+                    'discard-paths': 'yes',
+                },
+                'cache': {
+                    'paths': ['/root/.cache/pip'],
+                }
+            })
         )
-        oauthToken=core.SecretValue.plain_text('oauth_token')
+        
+        
+        github_token = core.SecretValue.secrets_manager(
+            'dev/msa/github-token', json_field='github-token'
+        )
 
         pipeline = cp.Pipeline(self, "pipeline",
             pipeline_name="DeployLambdaFunctions",
             artifact_bucket=buildlogs_bucket,
-            stages=[
-                cp.StageProps(
-                    stage_name='Source',
-                    actions=[
-                        cp_actions.GitHubSourceAction(
-                            oauth_token=oauthToken,
-                            output=sourceOutput,
-                            repo="serverless",
-                            branch="master",
-                            owner="nixsupport",
-                            action_name="GitHubSource",
-                            run_order=1
-                        )
-                    ]
-                ),
-                cp.StageProps(
-                    stage_name="Build",
-                    actions=[
-                        cp_actions.CodeBuildAction(
-                            action_name="TransformTemplate",
-                            input=sourceOutput,
-                            project=build_project,
-                            run_order=1
-
-                        )
-                    ]
-                )
-            ]
+            restart_execution_on_update=True,
         )
+
+        sourceOutput = cp.Artifact(artifact_name="source")
+        buildOutput = cp.Artifact(artifact_name="output")
+        cfn_outpt = cp.Artifact()
+
+        pipeline.add_stage(stage_name='Source',actions=[
+            cp_actions.GitHubSourceAction(
+                oauth_token=github_token,
+                output=sourceOutput,
+                repo="serverless",
+                branch="master",
+                owner="nixsupport",
+                action_name="GitHubSource"
+            )
+        ])
+
+        pipeline.add_stage(stage_name='Build',actions=[
+            cp_actions.CodeBuildAction(
+                action_name="TransformTemplate",
+                input=sourceOutput,
+                project=build_project,
+                outputs=[buildOutput],
+                type=cp_actions.CodeBuildActionType.BUILD
+            )
+        ])
+
+        pipeline.add_stage(stage_name='DeployToDev', actions=[
+            cp_actions.CloudFormationCreateReplaceChangeSetAction(
+                action_name='CreateChangeSet',
+                admin_permissions=True,
+                change_set_name='serverless-changeset-development',
+                stack_name='ServerlessPipelineDev',
+                template_path=cp.ArtifactPath(
+                    buildOutput,
+                    file_name='packaged-template.yaml'
+                ),
+                capabilities=[cfn.CloudFormationCapabilities.ANONYMOUS_IAM],
+                run_order=1
+            ),
+            cp_actions.CloudFormationExecuteChangeSetAction(
+                action_name='ExecuteChangeSet',
+                change_set_name='serverless-changeset-development',
+                stack_name='ServerlessPipelineDev',
+                output=cfn_outpt,
+                run_order=2
+            )
+        ])
+            
         artifact_bucket.grant_read_write(pipeline.role)
-        
-        #TODO
-        #domain name
 
         
         
