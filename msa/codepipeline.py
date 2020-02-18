@@ -20,16 +20,23 @@ class CodePipelineStack(core.Stack):
 
         artifact_bucket = s3.Bucket.from_bucket_name(self,'artifactbucket',artifactbucket)
         buildlogs_bucket = s3.Bucket.from_bucket_name(self,'buildlogsbucket',buildlogsbucket)
+        
+        #get_build_dev_role = ssm.StringParameter.value_from_lookup(self, 
+        #    parameter_name='/dev/codebuild/role'    
+        #)
+        dev_codebuild_role = iam.Role.from_role_arn(self,'buildrole','arn:aws:iam::xxxxxxxxxx:role/msa-codebuild-role')
 
         build_project = cb.PipelineProject(self,'buildtemplate',
-            project_name="BuildFunction",
-            description="Transform Serverless Framework template to CFN template",
+            project_name="DeployToDev",
+            description="Package Serverless Project",
             environment=cb.BuildEnvironment(
                 build_image=cb.LinuxBuildImage.STANDARD_3_0,
                 environment_variables={
-                    'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name)
+                    'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name),
+                    'env': cb.BuildEnvironmentVariable(value='dev')
                 },
             ),
+            role=dev_codebuild_role,
             cache=cb.Cache.bucket(artifact_bucket,prefix='codebuild-cache'),
             build_spec=cb.BuildSpec.from_object({
                 'version': '0.2',
@@ -37,16 +44,13 @@ class CodePipelineStack(core.Stack):
                     'install': {
                         'commands':[
                             'echo "----INSTALL PHASE----" ',
-                            'npm install -g serverless',
-                            'npm install --save-dev serverless-sam',
-                            'pip install awscli'
+                            'npm install -g serverless'
                         ]
                     },
                     'build': {
                         'commands':[
                             'echo "-----BUILD PHASE------"',
-                            'serverless sam export --output sam-template.yaml',
-                            'aws cloudformation package --template-file sam-template.yaml --s3-bucket $BUCKET --output-template packaged-template.yaml'
+                            'serverless deploy --stage $env'
                         ]
                             
                     },
@@ -59,11 +63,44 @@ class CodePipelineStack(core.Stack):
 
                 },
                 'artifacts': {
-                    'files': ['packaged-template.yaml'],
-                    'discard-paths': 'yes',
+                    'files': [
+                        'target/**/*',
+                        'serverless.yaml'
+                    ]
                 },
                 'cache': {
                     'paths': ['/root/.cache/pip'],
+                }
+            })
+        )
+
+        
+        deploy_project = cb.PipelineProject(self,'deploy',
+            project_name="DeployFunction",
+            description="Deploy Serverless Project",
+            environment=cb.BuildEnvironment(
+                build_image=cb.LinuxBuildImage.STANDARD_3_0,
+                environment_variables={
+                    'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name),
+                    'env': cb.BuildEnvironmentVariable(value='dev')
+                },
+            ),
+            build_spec=cb.BuildSpec.from_object({
+                'version': '0.2',
+                'phases': {
+                    'install': {
+                        'commands':[
+                            'echo "----INSTALL PHASE----" ',
+                            'npm install -g serverless'
+                        ]
+                    },
+                    'build': {
+                        'commands':[
+                            'echo "-----BUILD PHASE------"',
+                            'serverless deploy --stage $env --package $BUCKET/target/$env'
+                        ]
+                            
+                    }
                 }
             })
         )
@@ -72,38 +109,51 @@ class CodePipelineStack(core.Stack):
         github_token = core.SecretValue.secrets_manager(
             'dev/msa/github-token', json_field='github-token'
         )
-
+        
         pipeline = cp.Pipeline(self, "pipeline",
             pipeline_name="DeployLambdaFunctions",
-            artifact_bucket=buildlogs_bucket,
-            restart_execution_on_update=True,
+            artifact_bucket=artifact_bucket,
+            restart_execution_on_update=True
         )
 
         sourceOutput = cp.Artifact(artifact_name="source")
         buildOutput = cp.Artifact(artifact_name="output")
+        deploydevOutput = cp.Artifact(artifact_name="deploydev")
         cfn_outpt = cp.Artifact()
 
         pipeline.add_stage(stage_name='Source',actions=[
             cp_actions.GitHubSourceAction(
                 oauth_token=github_token,
                 output=sourceOutput,
-                repo="serverless",
+                repo="MSATechnology-NodeJS",
                 branch="master",
-                owner="nixsupport",
+                owner="revstarconsulting",
                 action_name="GitHubSource"
             )
         ])
 
-        pipeline.add_stage(stage_name='Build',actions=[
+        pipeline.add_stage(stage_name='DeployToDev',actions=[
             cp_actions.CodeBuildAction(
-                action_name="TransformTemplate",
+                action_name="DeployToDev",
                 input=sourceOutput,
                 project=build_project,
                 outputs=[buildOutput],
-                type=cp_actions.CodeBuildActionType.BUILD
+                #type=cp_actions.CodeBuildActionType.BUILD
             )
         ])
 
+        '''
+        pipeline.add_stage(stage_name='DeployDev', actions=[
+            cp_actions.CodeBuildAction(
+                action_name='DeployDev',
+                input=buildOutput,
+                project=deploy_project,
+                outputs=[deploydevOutput],
+                
+            )
+        ])
+        '''
+        '''
         pipeline.add_stage(stage_name='DeployToDev', actions=[
             cp_actions.CloudFormationCreateReplaceChangeSetAction(
                 action_name='CreateChangeSet',
@@ -112,9 +162,11 @@ class CodePipelineStack(core.Stack):
                 stack_name='ServerlessPipelineDev',
                 template_path=cp.ArtifactPath(
                     buildOutput,
-                    file_name='packaged-template.yaml'
+                    file_name='cloudformation-template-update-stack.json'
                 ),
-                capabilities=[cfn.CloudFormationCapabilities.ANONYMOUS_IAM],
+                capabilities=[cfn.CloudFormationCapabilities.NAMED_IAM, 
+                    cfn.CloudFormationCapabilities.AUTO_EXPAND, 
+                    cfn.CloudFormationCapabilities.ANONYMOUS_IAM],
                 run_order=1
             ),
             cp_actions.CloudFormationExecuteChangeSetAction(
@@ -122,10 +174,11 @@ class CodePipelineStack(core.Stack):
                 change_set_name='serverless-changeset-development',
                 stack_name='ServerlessPipelineDev',
                 output=cfn_outpt,
-                run_order=2
+                run_order=2,
+                
             )
         ])
-            
+        '''    
         artifact_bucket.grant_read_write(pipeline.role)
 
         
