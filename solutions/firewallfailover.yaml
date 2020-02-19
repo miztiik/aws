@@ -1,0 +1,295 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploy redundant failover solution
+
+Parameters: 
+  parPrimaryENI:
+    Type: String
+  parSecondaryENI:
+    Type: String
+  parPrimaryENIEIP:
+    Type: String
+  parSecondaryENIEIP:
+    Type: String
+  parDefaultRoute:
+    Type: String
+  parRouteTableId:
+    Type: String
+  parEIPAllocationId:
+    Type: String
+  parPrimaryInstanceId:
+    Type: String
+  parSecondaryInstanceId:
+    Type: String
+
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: Primary Firewall Details
+        Parameters:
+          - parPrimaryInstanceId
+          - parPrimaryENI
+          - parPrimaryENIEIP
+      - Label:
+          default: Secondary Firewall Details
+        Parameters:
+          - parSecondaryInstanceId
+          - parSecondaryENI
+          - parSecondaryENIEIP
+      - Label:
+          default: Network Details
+        Parameters:
+          - parRouteTableId
+          - parDefaultRoute
+          - parEIPAllocationId
+
+Resources: 
+  resFirewallFailoverRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+         PolicyName: VPCAccess
+         PolicyDocument:
+           Version: "2012-10-17"
+           Statement:
+              - 
+                Effect: "Allow"
+                Action: ec2:*
+                Resource: "*"
+              - 
+                Effect: "Allow"
+                Action: dynamodb:*
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action: "sns:Publish"
+                Resource: "arn:aws:sns:*:*:*"
+              -
+                Effect: "Allow"
+                Action: "logs:CreateLogGroup"
+                Resource: "arn:aws:logs:us-east-1:*:*"
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - "arn:aws:logs:us-east-1:*:log-group:*:*"
+  
+  resFirewallFailoverTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - 
+          AttributeName: "id"
+          AttributeType: "N"
+
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      TableName: "it4i-firewallfailover"
+
+  reslambdaFailOverPriToSec:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Failover from Primary to Secondary"
+      FunctionName: funcFirewallFailoverPriToSec
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import logging
+
+          def lambda_handler(event, context):
+            ec2 = boto3.resource('ec2')
+            ddb = boto3.client('dynamodb')
+            ec2client = boto3.client('ec2')
+
+            routeTableId = '${parRouteTableId}'
+            defaultRoute = '${parDefaultRoute}'
+            primaryENI = '${parPrimaryENI}'
+            secondaryENI = '${parSecondaryENI}'
+
+            eipAllocationId = '${parEIPAllocationId}'
+            primaryENIforEIP = '${parPrimaryENIEIP}'
+            secondaryENIforEIP = '${parSecondaryENIEIP}'
+            #update route table
+            route = ec2.Route(routeTableId,defaultRoute)
+            response = route.replace(
+                NetworkInterfaceId = secondaryENI
+            )
+            #switch EIP
+            #Get association ID
+            resp = ddb.get_item(
+                    TableName= 'it4i-firewallfailover',
+                    Key={'id': {'N':'1'}}
+                )
+            associationID = resp['Item']['associationId']['S']
+            
+            #disassociate EIP
+            ec2client.disassociate_address(
+                    AssociationId = associationID
+                )
+            #associate EIP
+            resp = ec2client.associate_address(
+                    AllocationId = eipAllocationId,
+                    NetworkInterfaceId = secondaryENIforEIP
+                )
+            newassociationID = resp['AssociationId']
+            #update new association id in DDB
+            ddb.update_item(
+                    TableName = 'it4i-firewallfailover',
+                    Key = {'id':{'N':'1'}},
+                    UpdateExpression='SET #A = :a',
+                    ExpressionAttributeNames={ '#A':'associationId' },
+                    ExpressionAttributeValues={ ':a':{'S': newassociationID} },
+                    ReturnValues='ALL_NEW'
+                )
+
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt resFirewallFailoverRole.Arn
+      Runtime: python2.7
+      Timeout: 120
+  
+  reslambdaFailOverSecToPri:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Failover from Secondary to Primary"
+      FunctionName: funcFirewallFailoverSecToPri
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import json
+
+          def lambda_handler(event, context):
+            ec2 = boto3.resource('ec2')
+            ddb = boto3.client('dynamodb')
+            ec2client = boto3.client('ec2')
+
+            routeTableId = '${parRouteTableId}'
+            defaultRoute = '${parDefaultRoute}'
+            primaryENI = '${parPrimaryENI}'
+            secondaryENI = '${parSecondaryENI}'
+
+            route = ec2.Route(routeTableId,defaultRoute)
+            #update route table
+            response = route.replace(
+                NetworkInterfaceId = primaryENI
+            )
+            #switch EIP
+            eipAllocationId = '${parEIPAllocationId}'
+            primaryENIforEIP = '${parPrimaryENIEIP}'
+            secondaryENIforEIP = '${parSecondaryENIEIP}'
+            
+            #Get association ID
+            resp = ddb.get_item(
+                    TableName = 'it4i-firewallfailover',
+                    Key={'id': {'N':'1'}}
+                )
+            associationID = resp['Item']['associationId']['S']
+            
+            #first disassociate
+            #then associate
+            #EIP on eth1 interface for both firewalls
+            
+            #disassociate EIP
+            ec2client.disassociate_address(
+                    AssociationId = associationID
+                )
+            #associate EIP
+            resp = ec2client.associate_address(
+                    AllocationId = eipAllocationId,
+                    NetworkInterfaceId = primaryENIforEIP
+                )
+            newassociationID = resp['AssociationId']
+                
+            
+            #update new association id in DDB
+            ddb.update_item(
+                    TableName = 'it4i-firewallfailover',
+                    Key = {'id':{'N':'1'}},
+                    UpdateExpression='SET #A = :a',
+                    ExpressionAttributeNames={ '#A':'associationId' },
+                    ExpressionAttributeValues={ ':a':{'S': newassociationID} },
+                    ReturnValues='ALL_NEW'
+                )
+            
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt resFirewallFailoverRole.Arn
+      Runtime: python2.7
+      Timeout: 120
+  
+  resFirwallPriToSecRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Rule to switch from Primary to Secondary"
+      EventPattern:
+        source:
+          - "aws.ec2"
+        detail-type:
+          - "EC2 Instance State-change Notification"
+        detail:
+          state:
+            - "stopping"
+            - "shutting-down"
+          instance-id:
+            - !Ref parPrimaryInstanceId
+      State: "DISABLED"
+      Targets:
+        -
+          Arn: !GetAtt reslambdaFailOverPriToSec.Arn
+          Id: "PriToSecFunction"
+
+  resPermissionsToInvokeLambdaPri:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref reslambdaFailOverPriToSec
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt resFirwallPriToSecRule.Arn
+
+  resFirwallSecToPriRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Rule to switch from Secondary to Primary"
+      EventPattern:
+        source:
+          - "aws.ec2"
+        detail-type:
+          - "EC2 Instance State-change Notification"
+        detail:
+          state:
+            - "stopping"
+            - "shutting-down"
+          instance-id:
+            - !Ref parSecondaryInstanceId
+      State: "DISABLED"
+      Targets:
+        -
+          Arn: !GetAtt reslambdaFailOverSecToPri.Arn
+          Id: "SecToPriFunction"
+
+  resPermissionsToInvokeLambdaSec:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref reslambdaFailOverSecToPri
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt resFirwallSecToPriRule.Arn
+      

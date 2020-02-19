@@ -1,0 +1,184 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Read Only policies for waf, iam, elb, cloudtrail, rds, route53, acm, secrets manager'
+Resources:
+  resConsoleReadOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Read Only access to varoius services to all teams
+      ManagedPolicyName: console-readonly-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AccessToRoute53
+            Effect: Allow
+            Action:
+              - route53:Get*
+              - route53:List*
+              - route53:TestDNSAnswer
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+          - Sid: AccessToACM
+            Effect: Allow
+            Action:
+              - acm:DescribeCertificate
+              - acm:ListCertificates
+              - acm:GetCertificate
+              - acm:ListTagsForCertificate
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+
+          - Sid: AccessToCloudTrail
+            Effect: Allow
+            Action:
+              - cloudtrail:LookupEvents
+              - cloudtrail:ListPublicKeys
+              - cloudtrail:ListTags
+              - cloudtrail:GetTrailStatus
+              - cloudtrail:GetEventSelectors
+              - cloudtrail:DescribeTrails
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - risk
+                  - qit
+                  - core
+          
+          - Sid: AccessToCloudFormation
+            Effect: Allow
+            Action:
+              - cloudformation:Get*
+              - cloudformation:List*
+              - cloudformation:Describe*
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - risk
+                  - repe
+                  - qit
+                  - core
+
+          - Sid: AccessToIAM
+            Effect: Allow
+            Action:
+              - iam:Get*
+              - iam:List*
+            Resource:
+              - arn:aws:iam::*:policy/*
+              - arn:aws:iam::*:user/*
+              - arn:aws:iam::*:role/*
+              - arn:aws:iam::*:group/*
+              - arn:aws:iam::*:server-certificate/*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - core
+                  - qit
+                  - risk
+                  - commonviews
+          - Sid: AccessToELB
+            Effect: Allow
+            Action:
+              - elasticloadbalancing:DescribeLoadBalancerAttributes
+              - elasticloadbalancing:DescribeSSLPolicies
+              - elasticloadbalancing:DescribeLoadBalancers
+              - elasticloadbalancing:DescribeTargetGroupAttributes
+              - elasticloadbalancing:DescribeListeners
+              - elasticloadbalancing:DescribeTags
+              - elasticloadbalancing:DescribeAccountLimits
+              - elasticloadbalancing:DescribeTargetHealth
+              - elasticloadbalancing:DescribeTargetGroups
+              - elasticloadbalancing:DescribeListenerCertificates
+              - elasticloadbalancing:DescribeRules
+            Resource: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+                  - qit
+                  - risk
+          - Sid: AccessToWAF
+            Effect: Allow
+            Action:
+              - waf:Get*
+              - waf:List*
+              - waf-regional:Get*
+              - waf-regional:List*
+            Resource: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+          - Sid: AccessToRDS
+            Effect: Allow
+            Action:
+              - rds:Describe*
+              - rds:ListTagsForResource
+            Resource: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - repe
+                  - ims
+                  - di
+                  - commonviews
+                  - ip
+                  - core
+                  - coll
+                  - tot
+
+          #SECRETS MANAGER
+
+          - Sid: ListAccessToSecretsManager
+            Effect: Allow
+            Action:
+              - secretsmanager:ListSecrets
+            Resource: '*'
+            
+          - Sid: AccessToSecretsManager
+            Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+              - secretsmanager:ListSecretVersionIds
+            Resource:
+              - arn:aws:secretsmanager:*:*:secret:/isg/quant/*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - qit
+
+          - Sid: AccessToCreateSecrets
+            Effect: Allow
+            Action:
+              - secretsmanager:CreateSecret
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+              - secretsmanager:ListSecretVersionIds
+              - secretsmanager:TagResource
+              - secretsmanager:UpdateSecret
+              - secretsmanager:DeleteSecret
+              - secretsmanager:PutSecretValue
+            Resource:
+              - arn:aws:secretsmanager:*:*:secret:/isg/core/*
+              - arn:aws:secretsmanager:*:*:secret:isg/core/*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+
+Outputs:
+  outReadOnlyPolicyARN:
+    Description: Read Only policies - cloudtrail iam elb waf
+    Value: !Ref resConsoleReadOnlyPolicy
+    Export:
+      Name: readonlyconsolepolicy
+        

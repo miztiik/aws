@@ -1,0 +1,158 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Detect Manual IAM Policy Changes
+
+Resources: 
+  resLambdaBasicExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: lambda_detect_iam_policy_change
+      Path: "/service-role/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Action: sts:AssumeRole
+            Principal:          
+              Service: lambda.amazonaws.com              
+      Policies:
+        -
+         PolicyName: AWSLambdaRequiredPermissions
+         PolicyDocument:
+           Version: "2012-10-17"
+           Statement:              
+              -
+                Effect: "Allow"
+                Action: "sns:Publish"
+                Resource: "arn:aws:sns:*:*:*"
+              -
+                Effect: "Allow"
+                Action: "logs:CreateLogGroup"
+                Resource: "arn:aws:logs:us-east-1:*:*"
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - "arn:aws:logs:us-east-1:*:log-group:*:*"
+              -     
+                Effect: "Allow"
+                Action:
+                  - "iam:GetRole"
+                  - "iam:GetPolicyVersion"
+                  - "iam:DetachRolePolicy"
+                  - "iam:GetPolicy"
+                  - "iam:ListPolicyVersions"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:AttachRolePolicy"
+                  - "iam:CreatePolicyVersion"
+                  - "iam:ListRolePolicies"
+                  - "iam:GetRolePolicy"
+                  - "iam:DeletePolicyVersion"
+                  - "iam:SetDefaultPolicyVersion"
+                  - "iam:ListPolicies"
+                Resource:
+                  - "arn:aws:iam::*:policy/*"
+                  - "arn:aws:iam::*:role/*"
+
+  reslambdaManualPolicyChanges:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Detect manual IAM policy changes"
+      FunctionName: funcDetectPolicyManualChanges
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import re
+          import logging
+
+          def lambda_handler(event, context):
+              
+              sns = boto3.resource('sns')
+              iam_client = boto3.client('iam')
+              topic = sns.Topic('arn:aws:sns:us-east-1:412160410275:iampolicychanges')
+              
+              logger = logging.getLogger()
+              logger.setLevel(logging.INFO)
+              logger.info('got event{}'.format(event))
+              
+              #source = event['detail']['sourceIPAddress']
+              currentVersion = event['detail']['responseElements']['policyVersion']['versionId']
+              print "CurrentVersion: "+currentVersion
+              
+              #previousVersion = re.search('\d+',currentVersion).group()
+              #previousVersion = int(previousVersion) - 1
+              #previousVersion = 'v'+str(previousVersion)
+              
+              #Get policy name
+              policyArn = event['detail']['requestParameters']['policyArn']
+              #policy = event['detail']['requestParameters']['policyArn']
+              policy = policyArn.split(':')[5]
+              policy = policy.split('/')[1]
+              
+              #Get user name
+              user = event['detail']['userIdentity']['arn']
+              user = user.split(':')[5]
+              user = user.split('/')[2]
+              
+              #Get previous version
+              previousVersion = iam_client.list_policy_versions(
+                      PolicyArn = policyArn
+                      
+                  )
+              previousVersion = previousVersion['Versions'][1]['VersionId']
+              print previousVersion
+              
+              print policy
+              print user
+              
+              managedPolicies = ['console-emr-policy','console-s3-policy', 'console-readonly-policy', 'console-ssm-policy','console-fullaccess-policy','console-servicecatalog-policy','console-codecommit-policy','console-ec2-policy','console-athenaglue-policy','console-ecr-policy','console-support-policy' ]
+              
+              if policy in managedPolicies and source not in ['cloudformation.amazonaws.com']:
+                  print 'Manual change detected in policy %s' %(policy)
+                  print "Auto mitigation started:"
+                  resp = iam_client.set_default_policy_version(
+                          PolicyArn = policyArn,
+                          VersionId = previousVersion
+                      )
+                  #delete current version
+                  iam_client.delete_policy_version(
+                          PolicyArn = policyArn,
+                          VersionId = currentVersion
+                      )
+              
+              
+                  eventdetails='\nPolicy Name: ' + policy
+                  eventdetails+='\nUser: ' + user
+                  eventdetails+='\nChanges Mitigated! \n'
+                  
+                  #print eventdetails
+                  
+                  response = topic.publish(
+                      Message=  'Event Details:'+str(eventdetails),
+                      Subject= 'Manual Changes Detected in IAM Policy',
+                      MessageStructure='String',
+                      MessageAttributes={
+                          'iampolicy': {
+                              'DataType': 'String',
+                              'StringValue': 'Policy Changes'
+                  
+                          }
+                      }
+                  )
+              
+              return {
+                  'user':user,
+                  'policy':policy,
+                  'version':currentVersion
+                  
+              }
+
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt resLambdaBasicExecutionRole.Arn
+      Runtime: python2.7
+      Timeout: 120
+      

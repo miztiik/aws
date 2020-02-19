@@ -1,0 +1,118 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'ECR EKS policies for AWS Console access'
+Resources:
+  resConsoleECRPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: ECR access to all teams
+      ManagedPolicyName: console-ecr-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ListECRAccessToAll
+          Effect: Allow
+          Action:
+            - ecr:DescribeRepositories
+            - ecr:ListImages
+            - ecr:DescribeImages
+            - ecr:ListTagsForResource
+          Resource: "*"
+        
+        - Sid: ListEKSAccessToAll
+          Effect: Allow
+          Action:
+            - eks:ListClusters
+            - eks:ListUpdates
+            - eks:DescribeCluster
+          Resource:
+            - arn:aws:eks:us-east-1:*:cluster/*
+
+        - Sid: ECRAccessToCore
+          Effect: Allow
+          Action:
+            - ecr:ListImages
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - ecr:CompleteLayerUpload
+            - ecr:DescribeImages
+            - ecr:UploadLayerPart
+            - ecr:ListImages
+            - ecr:InitiateLayerUpload
+            - ecr:DeleteRepository
+            - ecr:BatchCheckLayerAvailability
+            - ecr:GetRepositoryPolicy
+            - ecr:PutImage
+            - ecr:BatchDeleteImage
+            - ecr:CreateRepository
+          Resource:
+            - arn:aws:ecr:us-east-1:*:repository/isg-core/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - core
+
+        - Sid: ECRAccessToRisk
+          Effect: Allow
+          Action:
+            - ecr:ListImages
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - ecr:CompleteLayerUpload
+            - ecr:DescribeImages
+            - ecr:UploadLayerPart
+            - ecr:ListImages
+            - ecr:InitiateLayerUpload
+            - ecr:DeleteRepository
+            - ecr:BatchCheckLayerAvailability
+            - ecr:GetRepositoryPolicy
+            - ecr:PutImage
+            - ecr:BatchDeleteImage
+            - ecr:CreateRepository
+          Resource:
+            - arn:aws:ecr:us-east-1:*:repository/isg-risk/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - risk
+
+        - Sid: ECRAccessToQuant
+          Effect: Allow
+          Action:
+            - ecr:ListImages
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - ecr:CompleteLayerUpload
+            - ecr:DescribeImages
+            - ecr:UploadLayerPart
+            - ecr:ListImages
+            - ecr:InitiateLayerUpload
+            - ecr:DeleteRepository
+            - ecr:BatchCheckLayerAvailability
+            - ecr:GetRepositoryPolicy
+            - ecr:PutImage
+            - ecr:BatchDeleteImage
+          Resource:
+            - arn:aws:ecr:us-east-1:*:repository/isg-quant/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - qit
+        
+        - Sid: CreateECRRepository
+          Effect: Allow
+          Action:
+            - ecr:CreateRepository
+          Resource: "*"
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/team:
+                - qit  
+              
+Outputs:
+  outSSMPolicyARN:
+    Description: ECR Access
+    Value: !Ref resConsoleECRPolicy
+    Export:
+      Name: ecrconsolepolicy
+        

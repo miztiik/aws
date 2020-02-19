@@ -1,0 +1,55 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CodeCommit policies for AWS Console access'
+Resources:
+  resConsoleCodeCommitPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: CodeCommit access to all teams
+      ManagedPolicyName: console-codecommit-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ListAccessToAll
+          Effect: Allow
+          Action:
+          - codecommit:ListRepositories
+          Resource: "*"
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/team:
+              - core
+              - risk
+              - qit
+            
+        - Sid: CodeCommitAccessToCore
+          Effect: Allow
+          Action:
+            - codecommit:*
+          Resource: 
+            - arn:aws:codecommit:us-east-1:*:isg-core-config
+            - arn:aws:codecommit:us-east-1:*:isg-core-config/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - core
+        - Sid: DenySomeActions
+          Effect: Deny
+          Action:
+            - codecommit:CreateRepository
+            - codecommit:DeleteRepository
+          Resource:
+            - arn:aws:codecommit:us-east-1:*:isg-core-config
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/team:
+                - core
+                - risk
+                - qit
+Outputs:
+  outCodeCommitPolicyARN:
+    Description: CodeCommit policy for console
+    Value: !Ref resConsoleCodeCommitPolicy
+    Export:
+      Name: codecommitconsolepolicy
+        

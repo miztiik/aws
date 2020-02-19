@@ -1,0 +1,388 @@
+Parameters:
+  InstanceType:
+    Description: "Instance Type"
+    Type: String
+    Default: "m5.4xlarge"
+  Environment:
+    Description: "Select Environment"
+    Type: String
+    AllowedValues: ['dev', 'prod']
+    Default: "dev"
+  
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: Recovery Details
+        Parameters:
+          - InstanceType
+          - Environment
+      
+Resources:
+  resDRResourceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-drresourcepolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: s3:*
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action:
+                - lambda:InvokeFunction
+                Resource:
+                - '*'
+              -
+                Effect: Allow
+                Action:
+                - ssm:*
+                Resource:
+                - '*'
+              -
+                Effect: Allow
+                Action:
+                - sns:Publish
+                Resource:
+                - arn:aws:sns:*:*:*
+              -
+                Effect: "Allow"
+                Action:
+                  - ec2:*
+                Resource:
+                  - '*'
+              -
+                Effect: "Allow"
+                Action:
+                  - iam:PassRole
+                Resource:
+                  - '*'
+              -
+                Effect: "Allow"
+                Action:
+                  - logs:*
+                Resource:
+                  - "*"
+
+  resDRStatesExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-drstateexecutionpolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: lambda:InvokeFunction
+                Resource: '*'
+      Path: "/"
+
+  resDRInvokeStepFunctions:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-drInvokeStepFunctionpolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: states:StartExecution
+                Resource: !Ref DRStepFunction
+      Path: "/"
+
+  resDRRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Trigger Recovery Process"
+      EventPattern:
+        source:
+          - "aws.ec2"
+        detail-type:
+          - "EC2 Instance State-change Notification"
+        detail:
+          state:
+            - "terminating"
+      State: ENABLED
+      Targets:
+        -
+          Arn:
+            !Ref DRStepFunction
+          Id: "DRStepFunction"
+          RoleArn: !GetAtt resDRInvokeStepFunctions.Arn
+
+  resDRCreateServer:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Create Recovery Instance"
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          def lambda_handler(event, context):
+            client = boto3.client('ec2')
+            ec2_waiter = client.get_waiter('instance_running')
+            imageIds = event['imageIds']
+            application = event['imageIds'][0]['application']
+            #print imageIds
+            instanceId = ""
+            for ids in imageIds:
+                if ids["mountPoint"] == '/dev/sda1':
+                    application = ids['application']
+                    print 'AMI - create instance'
+                    resp = client.run_instances(
+                          ImageId = ids["amiId"],
+                          InstanceType='${InstanceType}',
+                          SecurityGroupIds=['sg-3bb86axxx'],
+                          MaxCount=1,
+                          MinCount=1,
+                          Monitoring={
+                              'Enabled': False
+                          },
+                          SubnetId='subnet-0125d9d7c077ea2xxx',
+                          #UserData='''
+                          IamInstanceProfile={
+                              'Name': 'SSMRole'
+                          },
+                          KeyName='aws_it4s_xxx',
+                          TagSpecifications=[
+                              {
+                                  'ResourceType': 'instance',
+                                  'Tags':[
+                                          {
+                                              'Key': 'Name',
+                                              'Value': application
+                                          }
+                                      ]
+                              }
+                          ]
+                
+            
+                      )
+                    instanceId = resp['Instances'][0]['InstanceId']
+                  
+                    ec2_waiter.wait(
+                            Filters=[
+                                {
+                                    'Name': 'instance-id',
+                                    'Values': [instanceId]
+                                }    
+                            ]
+                        )
+                
+            for ids in imageIds:
+                if ids["mountPoint"] != '/dev/sda1':
+                  resp = client.attach_volume(
+                          Device=ids['mountPoint'],
+                          InstanceId=instanceId,
+                          VolumeId=ids['volId']
+                      )
+                    
+            # TODO implement
+            return {
+                'instanceId': instanceId,
+                'instanceName': application
+            }
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role: 
+        Fn::GetAtt: ["resDRResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 900
+
+  resRecoverSnapshot:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Recover Snapshots"
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resDRResourceRole", "Arn"]
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+
+          def lambda_handler(event, context):
+            client = boto3.client('ec2')
+            ami_waiter = client.get_waiter('image_available')
+            vol_waiter = client.get_waiter('volume_available')
+            #look for system mount point
+            imageList = []
+            snaps = event['snaps']
+            for snap in snaps:
+              imagedict = {}
+              if snap['mountPoint'] == '/dev/sda1':
+                print 'root volume'
+                snapId = snap['SnapId']
+                #create AMI
+                resp = client.register_image(
+                        Architecture='x86_64',
+                        BlockDeviceMappings=[
+                            {
+                                'DeviceName': snap['mountPoint'],
+                                'Ebs':{
+                                    'DeleteOnTermination': True,
+                                    'SnapshotId': snapId
+                                },
+                            },
+                        ],
+                        Name=snapId,
+                        Description=snapId,
+                        RootDeviceName='/dev/sda1'
+                        
+                    )
+                ami_waiter.wait(ImageIds=[resp['ImageId']])
+                imagedict.update({'amiId':resp['ImageId']})
+                imagedict.update({'mountPoint':snap['mountPoint']})
+                imagedict.update({'application':snap['application']})
+              else:
+                print "non root volume"
+                snapId = snap['SnapId']
+                mountPoint = snap['mountPoint']
+                volumeType = snap['volumeType']
+                resp = client.create_volume(
+                        AvailabilityZone = 'us-east-1b',
+                        SnapshotId=snap['SnapId'],
+                        VolumeType = volumeType
+                    )
+                vol_waiter.wait(VolumeIds=[resp['VolumeId']])
+                imagedict.update({'volId':resp['VolumeId']})
+                imagedict.update({'mountPoint':snap['mountPoint']})
+                imagedict.update({'application':snap['application']})
+              imageList.append(imagedict)
+            # TODO implement
+            return {
+                'imageIds': imageList
+            }
+      Runtime: python2.7
+      Timeout: 600
+      
+
+  resGetSnapshotId:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Get Snapshot Ids"
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+
+          def lambda_handler(event, context):
+            client = boto3.client('ec2')
+            
+            instanceId = event['detail']['instance-id']
+            filters=[{'Name':'tag:instance-id', 'Values':[instanceId]}]
+            
+            resp = client.describe_snapshots(
+                        Filters=filters
+                    ).get('Snapshots',[])
+            snapList=[]
+            
+            for snaps in resp:
+              snapdict={}
+              snapId=snaps['SnapshotId']
+              snapdict.update({'SnapId':snapId})
+              for tag in snaps['Tags']:
+                if tag['Key'] == 'mountPoint':
+                  snapdict.update({'mountPoint':tag['Value']})
+                if tag['Key'] == 'volumeType':
+                  snapdict.update({'volumeType':tag['Value']})
+                if tag['Key'] == 'application':
+                  snapdict.update({'application':tag['Value']})
+              snapList.append(snapdict)
+            
+            return {
+                
+                'snaps': snapList,
+            }
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role: 
+        Fn::GetAtt: ["resDRResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 600
+      
+
+  
+  DRStepFunction:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: 
+        !Join
+        - ''
+        - - !Ref AWS::StackName
+        #  - "-ETLWorkflow"
+      DefinitionString: 
+        Fn::Sub: |-
+          {
+            "Comment": "Trigger Recovery Process",
+            "StartAt": "Get snapshot ids",
+            "States": {
+              "Get snapshot ids": {
+                "Type": "Task",
+                "Resource": "${resGetSnapshotId.Arn}",
+                "ResultPath": "$",
+                "Next": "Create Images"
+              },
+              "Create Images": {
+                "Type": "Task",
+                "Resource": "${resRecoverSnapshot.Arn}",
+                "ResultPath": "$",
+                "Next": "Create Instance"
+              },
+              "Create Instance": {
+                "Type": "Task",
+                "Resource": "${resDRCreateServer.Arn}",
+                "ResultPath": "$",
+                "End": true
+              }
+              
+              
+            }
+          }
+      RoleArn: 
+        Fn::GetAtt: ["resDRStatesExecutionRole", "Arn"]

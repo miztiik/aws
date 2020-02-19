@@ -1,9 +1,0 @@
-service: sls-project
-provider:
-  name: aws
-  runtime: nodejs12.x
-  stage: dev
-  profile: msa
-functions:
-  hello:
-    handler: handler.hello

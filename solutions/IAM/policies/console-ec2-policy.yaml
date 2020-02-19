@@ -1,0 +1,280 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EC2 policies for AWS Console access'
+Resources:
+  resConsoleEC2Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: EC2 access to all teams
+      ManagedPolicyName: console-ec2-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ListAccessToAll
+          Effect: Allow
+          Action:
+            - ec2:Describe*
+          Resource: "*"
+
+        - Sid: EC2AccessToAllTeams
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - boss
+                - core
+                - qit
+                - repe
+                - ims
+                - di
+                - coll
+                - commonviews
+                - ip
+                - soa
+                - dimensions
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Application: 
+                - isg-core-dev
+        
+        - Sid: EC2AccessToRisk
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - risk
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: RISK
+
+        - Sid: EC2AccessToCore
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - core
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: CORE
+
+        - Sid: EC2AccessToIMS
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - ims
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: IMS
+
+        - Sid: EC2AccessToTOT
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - tot
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: TOT
+        
+        - Sid: EC2AccessToREPE
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - repe
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: REPE
+
+        - Sid: EC2AccessToDI
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - di
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: DI
+
+        - Sid: EC2AccessToColl
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - coll
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: COLL
+        
+        - Sid: EC2AccessToCommonViews
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - commonviews
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: CV
+
+        - Sid: EC2AccessToIP
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - ip
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team: IP
+        
+        - Sid: EC2AccessToSOA
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - soa
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team:
+                - SOA
+                - BOSS
+        
+        - Sid: EC2AccessToDimensions
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - dimensions
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team:
+                - DMSN
+                - BOSS
+        
+        - Sid: EC2AccessToQuant
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - qit
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team:
+                - QIT
+                - Quant
+
+        - Sid: EC2AccessToAteam
+          Effect: Allow
+          Action:
+            - ec2:RebootInstances
+            - ec2:DeleteTags
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - ec2:CreateTags
+            - ec2:GetConsoleScreenshot
+          Resource: arn:aws:ec2:*:*:instance/*
+          Condition:
+            StringEquals:
+               aws:PrincipalTag/team: 
+                - ateam
+            StringEqualsIgnoreCase:
+               ec2:ResourceTag/Team:
+                - Ateam                
+Outputs:
+  outEC2PolicyARN:
+    Description: EC2 policy for console
+    Value: !Ref resConsoleEC2Policy
+    Export:
+      Name: ec2consolepolicy
+        

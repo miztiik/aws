@@ -1,0 +1,82 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Athena and Glue policies for AWS Console access'
+Resources:
+  resConsoleAthenaGluePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Athena and Glue access to all teams
+      ManagedPolicyName: console-athenaglue-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AccessToAthena
+            Effect: Allow
+            Action:
+              - athena:BatchGetQueryExecution
+              - athena:CancelQueryExecution
+              - athena:GetCatalogs
+              - athena:GetExecutionEngine
+              - athena:GetExecutionEngines
+              - athena:GetNamespace
+              - athena:GetNamespaces
+              - athena:GetQueryExecution
+              - athena:GetQueryExecutions
+              - athena:GetQueryResults
+              - athena:GetQueryResultsStream
+              - athena:GetTable
+              - athena:GetTables
+              - athena:ListQueryExecutions
+              - athena:RunQuery
+              - athena:StartQueryExecution
+              - athena:StopQueryExecution
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - risk
+                  - qit
+                  - ip
+                  - coll
+                  - dimensions
+
+          - Sid: AccessToQuant
+            Effect: Allow
+            Action:
+              - glue:CreateDatabase
+              - glue:DeleteDatabase
+              - glue:GetDatabase
+              - glue:GetDatabases
+              - glue:UpdateDatabase
+              - glue:CreateTable
+              - glue:DeleteTable
+              - glue:BatchDeleteTable
+              - glue:UpdateTable
+              - glue:GetTable
+              - glue:GetTables
+              - glue:BatchCreatePartition
+              - glue:CreatePartition
+              - glue:DeletePartition
+              - glue:BatchDeletePartition
+              - glue:UpdatePartition
+              - glue:GetPartition
+              - glue:GetPartitions
+              - glue:BatchGetPartition
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - risk
+                  - qit
+                  - ip
+                  - coll
+                  - dimensions
+
+                        
+Outputs:
+  outAthenaGluePolicyARN:
+    Description: Athena and Glue Access
+    Value: !Ref resConsoleAthenaGluePolicy
+    Export:
+      Name: athenaglueconsolepolicy
+        

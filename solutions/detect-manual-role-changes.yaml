@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Detect Manual IAM Policy Changes
+
+Resources:
+ 
+  reslambdaManualRoleChanges:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Detect manual IAM role changes"
+      FunctionName: funcDetectRoleChanges
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import logging
+
+          def lambda_handler(event, context):
+              
+              iam_client = boto3.client('iam')
+              sns = boto3.resource('sns')
+              topic = sns.Topic('arn:aws:sns:us-east-1:xxxxxxx:iamrolechanges')
+              
+              logger = logging.getLogger()
+              logger.setLevel(logging.INFO)
+              logger.info('got event{}'.format(event))
+              
+              #Get user name
+              user = event['detail']['userIdentity']['arn']
+              user = user.split(':')[5]
+              user = user.split('/')[2]
+              
+              source = event['detail']['sourceIPAddress']
+              eventName = event['detail']['eventName']
+              roleName = event['detail']['requestParameters']['roleName']
+              
+              
+              roles = ['Prod_Ateam','Prod_BOSS','Prod_Coll','Prod_CommonViews','Prod_Core','Prod_DI','Prod_Dimension','Prod_IMS','Prod_IP','Prod_QUANT','Prod_REPE','Prod_Risk']
+              
+              if roleName in roles and source not in ['cloudformation.amazonaws.com']:
+                  if eventName == 'PutRolePolicy':
+                      policyName = event['detail']['requestParameters']['policyName']
+                      iam_client.delete_role_policy(
+                              RoleName = roleName,
+                              PolicyName = policyName
+                          )
+                      eventdetails='\nEvent Name: Inline Policy Attached'
+                      eventdetails+='\nRole Name: ' + roleName
+                      eventdetails+='\nPolicy Name: ' + policyName
+                      eventdetails+='\nUser: ' + user
+                      eventdetails+='\nChanges Mitigated \n'
+                      
+                      #print eventdetails
+                      
+                      response = topic.publish(
+                          Message=  'Event Details:'+str(eventdetails),
+                          Subject= 'Inline Policy Attached',
+                          MessageStructure='String',
+                          MessageAttributes={
+                              'iamroleput': {
+                                  'DataType': 'String',
+                                  'StringValue': 'Put Policy'
+                      
+                              }
+                          }
+                      )
+                  elif eventName == 'AttachRolePolicy':
+                      policyArn = event['detail']['requestParameters']['policyArn']
+                      iam_client.detach_role_policy(
+                              RoleName = roleName,
+                              PolicyArn = policyArn
+                          )
+                      eventdetails='\nEvent Name: Managed Policy Attached'
+                      eventdetails+='\nRole Name: ' + roleName
+                      eventdetails+='\nPolicy ARN: ' + policyArn
+                      eventdetails+='\nUser: ' + user
+                      eventdetails+='\nChanges Mitigated \n'
+                      
+                      #print eventdetails
+                      
+                      response = topic.publish(
+                          Message=  'Event Details:'+str(eventdetails),
+                          Subject= 'Managed Policy Attached',
+                          MessageStructure='String',
+                          MessageAttributes={
+                              'iamroleput': {
+                                  'DataType': 'String',
+                                  'StringValue': 'Put Policy'
+                      
+                              }
+                          }
+                      )    
+                  
+                      
+                  
+                  
+                  
+              return {
+                  'EventName': eventName
+              }
+
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Role: arn:aws:iam::xxxxxx:role/service-role/lambda_detect_iam_policy_change
+      Runtime: python2.7
+      Timeout: 120

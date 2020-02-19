@@ -1,0 +1,960 @@
+Parameters:
+  ScheduleExpression:
+    Description: "Cronjob Cloudwatch Event Role for ETL"
+    Type: String
+    Default: 'cron(30 9 * * ? *)'
+  S3Bucket:
+    Description: "S3 Bucket that contains the Source Code"
+    Type: String
+  CoreInstanceCount:
+    Description: "Number of Core Instances to be provisioned"
+    Type: String
+    Default: 2
+  CoreInstanceType:
+    Description: "Core Instance Type"
+    Type: String
+    Default: "r5.4xlarge"
+  MasterInstanceType:
+    Description: "Master Instance Type"
+    Type: String
+    Default: "m5.4xlarge"
+  Environment:
+    Description: "Specify the appropriate environment for Dynaconf"
+    Type: String
+    Default: "development"
+  EMRStep:
+    Description: "Specify EMR Step"
+    Type: String
+    Default: "'spark-submit','--deploy-mode','cluster','--class','com.hoopp.isg.quant.BackTestApp','--master','yarn','--executor-cores','5','--num-executors','44','--executor-memory','39G','--driver-memory','39G','--conf','spark.sql.shuffle.partitions=480','--conf','spark.executor.extraJavaOptions=-Dlog4j.debug=true -Dlog4j.configuration=log4j.properties','--files','s3://xxxxxxxxxxx/QIT-DEV/deploy/application.conf,s3://xxxxxxxxxxx/QIT-DEV/deploy/log4j.properties','s3://xxxxxxxx/QIT-DEV/deploy/EqOptionRollingBackTestAll.jar','-a','1','2','3','-b','1','2','3','4','-m','1','3','-o','True','-s','yarn','-t','1M-2Y','-r','true'"
+  EMRReleaseLabel:
+    Description: "Specify EMR Release Label"
+    Type: String
+    Default: "emr-5.21.0"
+  EC2AMI:
+    Description: "AMI ID for EC2 Instance"
+    Type: String
+    Default: "ami-04c3592764b759776"
+  SNSTopic:
+    Description: "SNS Topic ARN"
+    Default: "arn:aws:sns:us-east-1:xxxxxxxxxxxx:emrworkflowalert"
+    Type: String
+
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: Master Node Details
+        Parameters:
+          - MasterInstanceType
+      - Label:
+          default: Core Node Details
+        Parameters:
+          - CoreInstanceType
+          - CoreInstanceCount
+      - Label:
+          default: EMR Details
+        Parameters:
+          - EMRReleaseLabel
+          - EMRStep
+          - S3Bucket
+          - ScheduleExpression
+          - Environment
+      - Label:
+          default: Other
+        Parameters:
+          - EC2AMI
+          - SNSTopic
+    
+Resources:
+  resETLResourceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-etlresourcepolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: s3:*
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action:
+                - lambda:InvokeFunction
+                Resource:
+                - '*'
+              -
+                Effect: Allow
+                Action:
+                - ssm:*
+                Resource:
+                - '*'
+              -
+                Effect: Allow
+                Action:
+                - sns:Publish
+                Resource:
+                - arn:aws:sns:*:*:*
+              -
+                Effect: "Allow"
+                Action:
+                  - ec2:*
+                Resource:
+                  - '*'
+              -
+                Effect: "Allow"
+                Action:
+                  - iam:PassRole
+                Resource:
+                  - '*'
+              -
+                Effect: "Allow"
+                Action:
+                  - elasticmapreduce:*
+                Resource:
+                  - '*'
+              -
+                Effect: "Allow"
+                Action:
+                  - logs:*
+                Resource:
+                  - "*"
+
+  resETLStatesExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-etlstateexecutionpolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: lambda:InvokeFunction
+                Resource: '*'
+      Path: "/"
+
+  resETLInvokeStepFunctions:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: 
+              !Join
+              - ''
+              - - !Ref Environment
+                - "-etlInvokeStepFunctionpolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Effect: "Allow"
+                Action: states:StartExecution
+                Resource: !Ref ETLStepFunctionV2
+      Path: "/"
+
+  resETLRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Schdule EMR Cluster Execution"
+      ScheduleExpression: !Ref 'ScheduleExpression'
+      State: ENABLED
+      Targets:
+        -
+          Arn:
+            !Ref ETLStepFunctionV2
+          Id: "ETLStepFunctionV2"
+          Input: "{\"instanceId\": \"i-xxxxxxxxxxx\"}"
+          RoleArn: !GetAtt resETLInvokeStepFunctions.Arn
+
+
+  resETLCreateEC2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Create EC2 Instance to run Python scripts"
+      Code:
+        ZipFile: !Sub |
+          import json
+          from botocore.exceptions import ClientError
+          import boto3
+
+          def lambda_handler(event, context):
+
+              '''
+              ec2client = boto3.client('ec2')
+              ec2res = boto3.resource('ec2')
+              waiter = ec2client.get_waiter('system_status_ok')
+              response = ec2client.run_instances(
+                ImageId = '${EC2AMI}',
+                InstanceType = 't3.medium',
+                KeyName = 'EMR_Quant',
+                SecurityGroupIds=['sg-1692a3xxx'],
+                SubnetId='subnet-6c5848xxx',
+                IamInstanceProfile={
+                      'Name': 'EMR_EC2_DefaultRole'
+                    },
+                MinCount=1,
+                MaxCount=1
+              )
+              instanceId = response['Instances'][0]['InstanceId']
+              #wait for instance to be in running state
+              waiter.wait(InstanceIds=[instanceId])
+              ec2res.create_tags(
+                Resources=[instanceId],
+                Tags=[
+                  {
+                    'Key':'Team',
+                    'Value':'Quant'
+                  }
+                ]
+              )
+              '''
+              instanceId=event['instanceId']
+              event['instanceId']=instanceId
+              return event
+
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 360
+      
+  resETLCopyFiles:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Copy scripts from PACE system to EC2"
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import time
+
+          def lambda_handler(event, context):
+              ssm = boto3.client('ssm')
+
+              instanceId=event['instanceId']
+              command1 = 'aws s3 cp ${S3Bucket}PaceDataImport/ /tmp/PaceDataImport/ --recursive'
+              command2 = 'aws s3 cp ${S3Bucket}ImpliedAndRealizedETL/ /tmp/ImpliedAndRealizedETL/ --recursive'
+              response = ssm.send_command(
+                  InstanceIds=[instanceId],
+                  DocumentName='AWS-RunShellScript',
+                  Parameters={
+                    'commands':[command1, command2]
+                  },
+              )
+              commandId=response['Command']['CommandId']
+              time.sleep(120)
+              event['instanceId'] = instanceId
+              
+              return event
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role: 
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 600
+
+  resETLExecutePaceScripts:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Execute PACE Scripts on EC2 Instance"
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import sys
+          import time
+
+          def lambda_handler(event, context):
+              ssm = boto3.client('ssm')
+
+              instanceId = event['instanceId']
+              command = 'export ENV_FOR_DYNACONF=${Environment} && sudo pip install -r /tmp/PaceDataImport/requirements.txt && sudo cp /tmp/PaceDataImport/resources/odbcinst.ini /etc/ && cd /tmp/PaceDataImport/src && python3 __main__.py'
+              response = ssm.send_command(
+                  InstanceIds=[instanceId],
+                  DocumentName='AWS-RunShellScript',
+                  Parameters={
+                    'commands':[command]
+                  }
+              )
+              commandId = response['Command']['CommandId']
+              time.sleep(20)
+              event['commandId'] = commandId
+              event['instanceId'] = instanceId
+              return event
+      Runtime: python2.7
+      Timeout: 180
+      
+
+  resETLCheckJobStatus:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Check Pace Data Import Script Status"
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          from botocore.exceptions import ClientError
+          import json
+
+          def lambda_handler(event, context):
+              ssm = boto3.client('ssm')
+              commandId = event['commandId']    
+              instanceId = event['instanceId']
+              
+              response = ssm.get_command_invocation(
+                  CommandId=commandId,
+                  InstanceId=instanceId
+              )
+              status = response['Status']
+
+              event['commandId'] = commandId
+              event['instanceId'] = instanceId
+              event['status'] = status
+              
+              return event
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role: 
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 180
+      
+
+  resETLExecuteImpliedScripts:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Execute Implied Scripts on EC2 Instance"
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          import sys
+          import time
+
+          def lambda_handler(event, context):
+              ssm = boto3.client('ssm')
+              sns = boto3.client('sns')
+              ec2client = boto3.client('ec2')
+              instanceId = event['instanceId']
+              command = 'export ENV_FOR_DYNACONF=${Environment} && cd /tmp/ImpliedAndRealizedETL/src && python3 __main__.py'
+              response = ssm.send_command(
+                  InstanceIds=[instanceId],
+                  DocumentName='AWS-RunShellScript',
+                  Parameters={
+                    'commands':[command]
+                  }
+              )
+              commandId = response['Command']['CommandId']
+              time.sleep(60)
+              status = ssm.get_command_invocation(
+                  CommandId = commandId,
+                  InstanceId = instanceId
+                )
+              
+              while status['Status'] != 'Success':
+                if status['Status'] == 'Failed':
+                  message = "ETL Implied Scrtips Failed"
+                  sns.publish(
+                    TopicArn="${SNSTopic}", 
+                    Message=message,
+                    Subject='EMR Workflow Status',
+                    MessageStructure='String',
+                      MessageAttributes={
+                          'etlaction': {
+                              'DataType': 'String',
+                              'StringValue': 'ETL'
+                          }
+                      }
+
+                  )
+                else:
+                  time.sleep(60)
+                  status = ssm.get_command_invocation(
+                    CommandId = commandId,
+                    InstanceId = instanceId
+                  )
+                  
+              if status['Status'] == 'Success':
+              #  ec2client.terminate_instances(
+              #    InstanceIds=[ instanceId ]
+              #
+                message = "ETL Implied Scripts Execution\n"
+                message+="\nEnvironment: ${Environment}"
+                message+="\nStatus: " + str(status['Status'])
+                sns.publish(
+                  TopicArn="${SNSTopic}", 
+                  Message=message,
+                  Subject='ImpliedvHistorical Execution Status',
+                  MessageStructure='String',
+                    MessageAttributes={
+                        'etlaction': {
+                            'DataType': 'String',
+                            'StringValue': 'ETL'
+                        }
+                    }
+
+                )  
+              
+              event['instanceId'] = instanceId
+              return event
+      Runtime: python2.7
+      Timeout: 180
+      
+
+  resETLLaunchEMRCluster:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Create EMR Cluster"
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          from botocore.exceptions import ClientError
+          import json
+          import random
+          import string
+          import time
+
+          def lambda_handler(event, context):
+              emrclient = boto3.client('emr')
+              #Generate random string for EMR name
+              name = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(6)])
+              name = 'ETLWorkFlow-%s' %(name)
+              response = emrclient.run_job_flow(
+                Name=name,
+                LogUri="s3://hoopp-isg-quant-emr-logs/",
+                ReleaseLabel='${EMRReleaseLabel}',
+                Instances={
+                  'InstanceGroups':[
+                    {
+                      'Name': 'Master',
+                      'Market': 'ON_DEMAND',
+                      'InstanceRole': 'MASTER',
+                      'InstanceCount': 1,
+                      'InstanceType': '${MasterInstanceType}',
+                      'EbsConfiguration':{
+                        'EbsBlockDeviceConfigs': [
+                          {
+                            'VolumeSpecification': {
+                              'VolumeType': 'gp2',
+                              'SizeInGB': 320
+                            }
+                            
+                          },
+                        ],
+                      }
+
+                    },
+                    {
+                      'Name': 'CORE',
+                      'Market': 'ON_DEMAND',
+                      'InstanceRole': 'CORE',
+                      'InstanceCount': ${CoreInstanceCount},
+                      'InstanceType': '${CoreInstanceType}',
+                      'EbsConfiguration':{
+                        'EbsBlockDeviceConfigs': [
+                          {
+                            'VolumeSpecification': {
+                              'VolumeType': 'gp2',
+                              'SizeInGB': 320
+                            }
+                          }
+                        ]
+                      }        
+                    }            
+                  ],
+                  'Ec2KeyName': 'EMR_Quant',
+                  'KeepJobFlowAliveWhenNoSteps': True,
+                  'EmrManagedMasterSecurityGroup': 'sg-a56546xxx',
+                  'EmrManagedSlaveSecurityGroup': 'sg-43694axxx',
+                  'ServiceAccessSecurityGroup': 'sg-fc6546xxx',
+                  'Ec2SubnetId': 'subnet-6c5848xxx'
+                },
+                Configurations=[
+                    {
+                      'Classification': 'capacity-scheduler',
+                      'Properties': {
+                        'yarn.scheduler.capacity.resource-calculator':'org.apache.hadoop.yarn.util.resource.DominantResourceCalculator'
+                      }
+
+                    }
+                  ],
+                EbsRootVolumeSize=10,
+                ScaleDownBehavior='TERMINATE_AT_TASK_COMPLETION',
+                VisibleToAllUsers=True,
+                JobFlowRole='EMR_EC2_DefaultRole',
+                ServiceRole='EMR_DefaultRole',
+                Applications=[
+                  {
+                    'Name': 'Spark'
+                  },
+                  {
+                    'Name': 'Hadoop'
+                  }
+                ],
+                Tags=[
+                  {
+                    'Key': 'Team',
+                    'Value': 'Quant'
+                  },
+                  {
+                    'Key': 'Name',
+                    'Value': 'EMR'
+                  }
+                ]
+
+              )
+              time.sleep(20)
+              emrClusterId = response['JobFlowId']
+              event['emrClusterId'] = emrClusterId
+              return event
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role: 
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 300
+      
+
+  resETLCheckClusterStatus:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Check EMR Cluster Status"
+      Code:
+        ZipFile: !Sub |
+          import boto3
+
+          def lambda_handler(event, context):
+            emrclient = boto3.client('emr')
+            emrClusterId = event['emrClusterId']
+            response = emrclient.describe_cluster(
+              ClusterId=emrClusterId
+            )
+            clusterStatus = response['Cluster']['Status']['State']
+
+            event['clusterStatus'] = clusterStatus
+            event['emrClusterId'] = emrClusterId
+            return event
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 120
+      
+  
+  resETLExecuteEMRSteps:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Execute EMR Status"
+      Code:
+        ZipFile: !Sub |
+          import boto3
+
+          def lambda_handler(event, context):
+            emrclient = boto3.client('emr')
+            emrClusterId = event['emrClusterId']
+            
+            response = emrclient.add_job_flow_steps(
+              JobFlowId = emrClusterId,
+              Steps=[
+                {
+                  'Name': 'Setup Hadoop Debugging',
+                  'ActionOnFailure': 'TERMINATE_CLUSTER',
+                  'HadoopJarStep': {
+                      'Jar': 'command-runner.jar',
+                      'Args': ['state-pusher-script']
+                  }
+                },
+                {
+                  'Name': 'option-backtest-1M-2Y-rolling-vanilla-barrier-daily',
+                  'ActionOnFailure': 'TERMINATE_CLUSTER',
+                  'HadoopJarStep': {
+                      'Jar':'command-runner.jar',
+                      'Args': [
+                          ${EMRStep},
+                      ]
+                  }
+                  
+                },
+              ]
+            )
+            emrStepId = response['StepIds'][1]
+            event['emrStepId'] = emrStepId
+            event['emrClusterId'] = emrClusterId
+            return event
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 120
+
+  resETLCheckStepStatus:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Check EMR Step Status"
+      Code:
+        ZipFile: !Sub |
+          import boto3
+
+          def lambda_handler(event, context):
+            emrclient = boto3.client('emr')
+            emrClusterId = event['emrClusterId']
+            emrStepId = event['emrStepId']
+            response = emrclient.describe_step(
+              ClusterId=emrClusterId,
+              StepId=emrStepId
+            )
+            stepStatus = response['Step']['Status']['State']
+
+            event['stepStatus'] = stepStatus
+            event['emrClusterId'] = emrClusterId
+            return event
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 120  
+
+  etlSendSNSPaceData:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Send Notification if Pace Data Import Script Fails"  
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import json
+          from botocore.exceptions import ClientError
+          client = boto3.client('sns')
+          def lambda_handler(event, context):
+              message = "Pace Data Execution ${Environment}" + str(event['status'])
+              try:
+                client.publish(
+                  TopicArn="${SNSTopic}", 
+                  Message=message,
+                  Subject='PACE Script Execution Status'
+                )
+                return True
+            except ClientError as err:
+                return err
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 180
+
+  etlSendSNSEMRSteps:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Send Notification for EMR Steps Status"  
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import json
+          from botocore.exceptions import ClientError
+          client = boto3.client('sns')
+          def lambda_handler(event, context):
+            
+            #message = "EMR Steps Execution ${Environment}-" + str(event['stepStatus'])
+            message = "EMR Steps Execution\n"
+            message+="\nEnvironment: ${Environment}"
+            message+="\nStatus: " + str(event['stepStatus'])
+            emrClusterId = event['emrClusterId']
+            client.publish(
+              TopicArn="${SNSTopic}", 
+              Message=message,
+              Subject='EMR Workflow Status',
+              MessageStructure='String',
+                MessageAttributes={
+                    'etlaction': {
+                        'DataType': 'String',
+                        'StringValue': 'ETL'
+                    }
+                }
+
+            )
+            event['emrClusterId'] = emrClusterId
+            return event
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 180
+  
+  etlCleanupResources:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Cleanup Resources after execution"  
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import json
+          from botocore.exceptions import ClientError
+          emrclient = boto3.client('emr')
+          def lambda_handler(event, context):
+            emrClusterId = event['emrClusterId']
+            emrStepStatus = event['stepStatus']
+            if emrStepStatus == 'COMPLETED':
+              response = emrclient.terminate_job_flows(
+                JobFlowIds=[ emrClusterId ]
+              )
+            else:
+              print emrStepStatus
+      Handler: index.lambda_handler
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Role:
+        Fn::GetAtt: ["resETLResourceRole", "Arn"]
+      Runtime: python2.7
+      Timeout: 300
+  
+  #etlWorkFlowSNSTopic:
+  #  Type: AWS::SNS::Topic
+  #  Properties:
+  #    DisplayName: "ETLWorkFlow-${Environment}-Notice"
+  #    TopicName: "ETLWorkFlow-${Environment}-Notice"
+
+  ETLStepFunctionV2:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: 
+        !Join
+        - ''
+        - - !Ref AWS::StackName
+        #  - "-ETLWorkflow"
+      DefinitionString: 
+        Fn::Sub: |-
+          {
+            "Comment": "ETL WorkFlow Scheduler",
+            "Version": "1.0",
+            "TimeoutSeconds": 20000,
+            "StartAt": "Create EC2 Instance",
+            "States": {
+              "Create EC2 Instance": {
+                "Type": "Task",
+                "Resource": "${resETLCreateEC2.Arn}",
+                "ResultPath": "$",
+                "Next": "Copy Python Scripts"
+              },
+              "Copy Python Scripts": {
+                "Type": "Task",
+                "Resource": "${resETLCopyFiles.Arn}",
+                "ResultPath": "$",
+                "Next": "Execute PACE Data Import Scripts"
+              },
+              "Execute PACE Data Import Scripts": {
+                "Type": "Task",
+                "Resource": "${resETLExecutePaceScripts.Arn}",
+                "ResultPath": "$",
+                "Next": "Check Pace Data Job Status"
+              },
+              "Check Pace Data Job Status":{
+                "Type": "Task",
+                "Resource": "${resETLCheckJobStatus.Arn}",
+                "ResultPath": "$",
+                "Next": "Pace Data Job Completed?"
+              },
+              "Pace Data Job Completed?":{
+                "Type": "Choice",
+                "Choices": [
+                  {          
+                    "Variable": "$.status",
+                    "StringEquals": "Success",
+                    "Next": "SUCCESS"
+                  },
+                  {
+                    "Variable": "$.status",
+                    "StringEquals": "Failed",
+                    "Next": "FAILED"
+                  },
+                  {
+                    "Variable": "$.status",
+                    "StringEquals": "InProgress",
+                    "Next": "Wait for job completion"
+                  }
+                ]
+              },
+              "Wait for job completion":{
+                "Type": "Wait",
+                "Seconds": 60,
+                "Next": "Check Pace Data Job Status"
+              },
+              "SUCCESS": {
+                "Type": "Pass",
+                "Next": "Parallel"
+              },
+              "Parallel": {
+                "Type": "Parallel",
+                "End": true,
+                "Branches":[
+                  {
+                    "StartAt": "Execute Implied v Historical Script",
+                    "States":{
+                    "Execute Implied v Historical Script":{
+                      "Type": "Task",
+                      "Resource": "${resETLExecuteImpliedScripts.Arn}",
+                      "ResultPath": "$",
+                      "End": true
+                    }
+                    }
+                  },
+                  {
+                    "StartAt": "Spin up EMR Cluster",
+                    "States":{
+                      "Spin up EMR Cluster":{
+                        "Type": "Task",
+                        "Resource": "${resETLLaunchEMRCluster.Arn}",
+                        "ResultPath": "$",
+                        "Next": "Check Cluster Status"
+                      },
+                      
+                      "Check Cluster Status":{
+                        "Type": "Task",
+                        "Resource": "${resETLCheckClusterStatus.Arn}",
+                        "ResultPath": "$",
+                        "Next": "Is Cluster Ready?"
+                      },
+                      "Is Cluster Ready?": {
+                        "Type": "Choice",
+                        "Choices": [
+                          {
+                            "Variable": "$.clusterStatus",
+                            "StringEquals": "STARTING",
+                            "Next": "Wait For X Minutes"
+                          },
+                          {
+                            "Variable": "$.clusterStatus",
+                            "StringEquals": "WAITING",
+                            "Next": "Execute EMR Steps"
+                          }
+                        ]
+                      },
+                      "Wait For X Minutes":{
+                        "Type": "Wait",
+                        "Seconds": 180,
+                        "Next": "Check Cluster Status"
+                      },
+                      "Execute EMR Steps":{
+                        "Type": "Task",
+                        "Resource": "${resETLExecuteEMRSteps.Arn}",
+                        "ResultPath": "$",
+                        "Next": "Check EMR Step Status"
+                      },
+                      "Check EMR Step Status":{
+                        "Type": "Task",
+                        "Resource": "${resETLCheckStepStatus.Arn}",
+                        "ResultPath": "$",
+                        "Next": "EMR Steps Completed?"
+                      },
+                      "EMR Steps Completed?":{
+                        "Type": "Choice",
+                        "Choices":[
+                          {
+                            "Variable": "$.stepStatus",
+                            "StringEquals": "COMPLETED",
+                            "Next": "EMR Success Notification"
+                          },
+                          {
+                            "Variable": "$.stepStatus",
+                            "StringEquals": "FAILED",
+                            "Next": "EMR Failed Notification"
+                          },
+                          {
+                            "Variable": "$.stepStatus",
+                            "StringEquals": "RUNNING",
+                            "Next": "Wait For Y Minutes"
+                          },
+                          {
+                            "Variable": "$.stepStatus",
+                            "StringEquals": "PENDING",
+                            "Next": "Wait For Y Minutes"
+                          }
+                        ]
+                      },
+                      "Wait For Y Minutes": {
+                        "Type": "Wait",
+                        "Seconds": 500,
+                        "Next": "Check EMR Step Status"
+                      },
+                      "EMR Success Notification":{
+                        "Type": "Task",
+                        "Resource": "${etlSendSNSEMRSteps.Arn}",
+                        "Next": "Cleanup Resources"
+                      },
+                      "EMR Failed Notification":{
+                        "Type": "Task",
+                        "Resource": "${etlSendSNSEMRSteps.Arn}",
+                        "Next": "Cleanup Resources"
+                      },
+                      "Cleanup Resources": {
+                        "Type": "Task",
+                        "Resource": "${etlCleanupResources.Arn}",
+                        "End": true
+                      }
+
+                    }
+                    
+
+                  }
+                ]
+              },
+              "FAILED": {
+                "Type": "Pass",
+                "Next": "Send Notification and Terminate"
+              },
+              "Send Notification and Terminate": {
+                "Type": "Task",
+                "Resource": "${etlSendSNSPaceData.Arn}",
+                "End": true
+              }
+              
+            }
+          }
+      RoleArn: 
+        Fn::GetAtt: ["resETLStatesExecutionRole", "Arn"]
