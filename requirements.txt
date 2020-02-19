@@ -12,3 +12,4 @@ aws-cdk.aws-codepipeline
 aws-cdk.aws-codepipeline-actions
 aws-cdk.aws-secretsmanager
 aws-cdk.aws-ssm
+aws-cdk.aws-cognito

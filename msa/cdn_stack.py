@@ -27,11 +27,13 @@ class CDNStack(core.Stack):
             web_acl_id=webAclId
         )
         core.CfnOutput(self,'cdnid',
-            value=cdnId.distribution_id
+            value=cdnId.distribution_id,
+            export_name='distribution-id'
         )
         #TODO
         #ACM Cert
 
+        
         
         
         

@@ -90,6 +90,9 @@
     "cdnid": {
       "Value": {
         "Ref": "webhostingcdnCFDistribution1D75AAA9"
+      },
+      "Export": {
+        "Name": "distribution-id"
       }
     }
   }

@@ -1,0 +1,33 @@
+{
+  "Resources": {
+    "msaB50981FE": {
+      "Type": "AWS::Cognito::UserPool",
+      "Properties": {
+        "AutoVerifiedAttributes": [
+          "email"
+        ],
+        "LambdaConfig": {},
+        "UsernameAttributes": [
+          "email"
+        ],
+        "UserPoolName": "msa-dev"
+      },
+      "Metadata": {
+        "aws:cdk:path": "cognito/msa/Resource"
+      }
+    },
+    "msaclientDE5FB321": {
+      "Type": "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "UserPoolId": {
+          "Ref": "msaB50981FE"
+        },
+        "ClientName": "msa-client",
+        "GenerateSecret": false
+      },
+      "Metadata": {
+        "aws:cdk:path": "cognito/msaclient/Resource"
+      }
+    }
+  }
+}
