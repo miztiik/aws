@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploy GuardDuty Automated Response - EC2 quarantine
+
+Resources: 
+  resGuardDutyCrossAccountRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: lambda-guardduty-cross-account
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Action: sts:AssumeRole
+            Principal:              
+              AWS: arn:aws:iam::xxxxxxxx:role/lambda-guardduty-cross-account            
+            Service: lambda.amazonaws.com
+      Policies:
+        - 
+         PolicyName: RemediationAccess
+         PolicyDocument:
+           Version: "2012-10-17"
+           Statement:
+              - 
+                Effect: "Allow"
+                Action: ec2:*
+                Resource: "*"
+              -
+                Effect: "Allow"
+                Action: "sns:Publish"
+                Resource: "arn:aws:sns:*:*:*"
+              -
+                Effect: "Allow"
+                Action: "logs:CreateLogGroup"
+                Resource: "arn:aws:logs:us-east-1:*:*"
+              -
+                Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - "arn:aws:logs:us-east-1:*:log-group:*:*"
+
+  reslambdaGuardDutyRemediation:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Quarantine Compromised EC2 instance"
+      FunctionName: funcGuardDutyRemedition
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+
+          def lambda_handler(event, context):
+            ec2Res = boto3.resource('ec2')
+            ec2Client = boto3.client('ec2')
+            sns = boto3.resource('sns')
+            topic = sns.Topic('arn:aws:sns:us-east-1:xxxxx:GuardDuty-Remediation-Alert')
+            quarSecurityGroup = ['sg-06940c546exxxx']
+            ec2Types = ['Recon:EC2/PortProbeUnprotectedPort','Recon:EC2/Portscan','CryptoCurrency:EC2/BitcoinTool.B!DNS','CryptoCurrency:EC2/BitcoinTool.B','Backdoor:EC2/C&CActivity.B!DNS','UnauthorizedAccess:EC2/TorIPCaller','UnauthorizedAccess:EC2/MaliciousIPCaller.Custom','UnauthorizedAccess:EC2/TorClient','UnauthorizedAccess:EC2/TorRelay']
+    
+            detectedType = event['detail']['type']
+            resourceType = event['detail']['resource']['resourceType']
+    
+            if detectedType in ec2Types:
+              if resourceType == "Instance":
+                  instanceId = event['detail']['resource']['instanceDetails']['instanceId']
+                  ec2Instance = ec2Res.Instance(instanceId)
+                  for tags in ec2Instance.tags:
+                      if tags['Key'] == 'Name':
+                          instanceName = tags['Value']
+            
+            #change SG
+            ec2Instance.modify_attribute(
+                    Groups = quarSecurityGroup
+                )
+            #create tag
+            ec2Client.create_tags(
+                    Resources=[instanceId],
+                    Tags=[
+                        {
+                            'Key':'Status',
+                            'Value':'Possibly Compromised'
+                        }    
+                    ]
+                )
+            #Gather Event Details
+            eventDetails="\nGuardDuty Action Triggered"
+            eventDetails+="\nGuardDuty Finding: " + detectedType
+            eventDetails+="\nAffected Resource Type: " + resourceType
+            eventDetails+="\nResource ID: " + instanceId
+            eventDetails+="\nResource placed in quarantine security group: " + str(quarSecurityGroup) + "\n"
+            eventDetails+="\nResource tagged with Possibly Compromised Status key"
+            
+            #Send SNS
+            response = topic.publish(
+                Message=  'Event Details:'+str(eventDetails),
+                Subject= 'GuardDuty Action Triggered',
+                MessageStructure='String',
+                MessageAttributes={
+                    'gdaction': {
+                        'DataType': 'String',
+                        'StringValue': 'GD Action'
+            
+                    }
+                }
+            )
+
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt resGuardDutyCrossAccountRole.Arn
+      Runtime: python2.7
+      Timeout: 120
+
+  resPermissionsToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: !Ref reslambdaGuardDutyRemediation
+      Principal: arn:aws:iam::xxxxxxx:root
+      SourceArn: arn:aws:sts::xxxxxxx:assumed-role/lambda-guardduty-cross-account/funcGuardDutyDecisionMaker
+      

@@ -1,0 +1,580 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Console Role for Dev Teams'
+Resources:
+  resRoleDevCore:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Core"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Core-Role"
+  
+  resRoleDevRisk:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Risk"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Risk-Role"
+    
+  resRoleDevQuant:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Quant"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Quant-Role"
+
+  resRoleDevIms:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-IMS"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Ims-Role"
+  
+  resRoleDevTot:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-TOT"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Tot-Role"
+
+  resRoleDevBoss:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Boss"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Boss-Role"
+  
+  resRoleDevRepe:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-REPE"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Repe-Role"
+
+  resRoleDevDi:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-DI"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+        - arn:aws:iam::aws:policy/AWSStorageGatewayReadOnlyAccess
+      RoleName: "Dev-DI-Role"
+  
+  resRoleDevColl:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Coll"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Coll-Role"
+
+  resRoleDevCommonViews:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-CommonViews"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-CommonViews-Role"
+
+  resRoleDevIP:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-IP"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-IP-Role"
+    
+  resRoleDevSOA:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-SOA"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-SOA-Role"
+  
+  resRoleDevDimension:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-Dimension"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-Dimension-Role"
+
+  resRoleDevATeam:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-ATeam"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+        - arn:aws:iam::aws:policy/ServiceCatalogEndUserAccess
+      RoleName: "Dev-ATeam-Role"
+    
+  resRoleDevBusiness:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS_Business"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+      RoleName: "Dev-Business-Role"
+
+  resRoleDevOnex:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::xxxxxxxxxx:role/AWS-ONEX"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !ImportValue console-policies-s3cfnconsolepolicy
+        - !ImportValue console-policies-ec2cfnconsolepolicy
+        - !ImportValue console-policies-ssmcfnconsolepolicy
+        - !ImportValue console-policies-athenagluecfnconsolepolicy
+        - !ImportValue console-policies-supportcfnconsolepolicy
+        - !ImportValue console-policies-ecrcfnconsolepolicy
+        - !ImportValue console-policies-readonlycfnconsolepolicy
+        - !ImportValue console-policies-emrcfnconsolepolicy
+        - !ImportValue console-policies-codecommitcfnconsolepolicy
+        - !ImportValue console-policies-fullaccessddbcfnconsolepolicy
+        - !ImportValue console-policies-fullaccesscfnconsolepolicy
+        - !ImportValue console-policies-readonlyrdscfnconsolepolicy
+        - !ImportValue console-policies-servicecatalogcfnconsolepolicy
+        - !ImportValue console-policies-cognitocfnconsolepolicy
+        - !ImportValue console-policies-mlcfnconsolepolicy
+      RoleName: "Dev-ONEX-Role"
+
+Outputs:
+
+  outRoleDevDimension:
+    Description: Console role for Dimensions team
+    Value: !GetAtt resRoleDevDimension.Arn
+
+  outRoleDevColl:
+    Description: Console role for Coll team
+    Value: !GetAtt resRoleDevColl.Arn
+  
+  outRoleDevSOA:
+    Description: Console role for SOA team
+    Value: !GetAtt resRoleDevSOA.Arn
+  
+  outRoleDevIP:
+    Description: Console role for IP team
+    Value: !GetAtt resRoleDevIP.Arn
+
+  outRoleDevCommonViews:
+    Description: Console role for CommonViews team
+    Value: !GetAtt resRoleDevCommonViews.Arn
+
+  outRoleDevCore:
+    Description: Console role for Core team
+    Value: !GetAtt resRoleDevCore.Arn
+
+  outRoleDevRisk:
+    Description: Console role for Risk team
+    Value: !GetAtt resRoleDevRisk.Arn
+  
+  outRoleDevQuant:
+    Description: Console role for Quant team
+    Value: !GetAtt resRoleDevQuant.Arn
+  
+  outRoleDevIms:
+    Description: Console role for IMS team
+    Value: !GetAtt resRoleDevIms.Arn
+  
+  outRoleDevBoss:
+    Description: Console role for Boss team
+    Value: !GetAtt resRoleDevBoss.Arn
+  
+  outRoleDevRepe:
+    Description: Console role for REPE team
+    Value: !GetAtt resRoleDevRepe.Arn
+
+  outRoleDevDI:
+    Description: Console role for DI team
+    Value: !GetAtt resRoleDevDi.Arn
+
+  outRoleDevATeam:
+    Description: Console role for A Team
+    Value: !GetAtt resRoleDevATeam.Arn
+  
+  outRoleDevTot:
+    Description: Console role for TOT team
+    Value: !GetAtt resRoleDevTot.Arn
+  
+  outRoleBusiness:
+    Description: Console role for Business team
+    Value: !GetAtt resRoleDevBusiness.Arn
+  
+  outRoleDevOnex:
+    Description: Console role for ONEX team
+    Value: !GetAtt resRoleDevOnex.Arn

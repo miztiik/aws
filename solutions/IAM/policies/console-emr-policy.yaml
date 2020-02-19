@@ -1,0 +1,161 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EMR Kafka DataPipeline - policy for AWS Console access'
+Resources:
+  resConsoleEMRPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: EMR access to all teams
+      ManagedPolicyName: console-emr-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ListAccessToAll
+            Effect: Allow
+            Action:
+              - elasticmapreduce:DescribeSecurityConfiguration
+              - elasticmapreduce:ListSecurityConfigurations
+              - elasticmapreduce:ViewEventsFromAllClustersInConsole
+              - elasticmapreduce:ListClusters
+              - elasticmapreduce:RunJobFlow
+              - elasticmapreduce:ListEditors
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - risk
+                  - core
+                  - qit
+          - Sid: ManageEMRCluster
+            Effect: Allow
+            Action:
+              - elasticmapreduce:ListBootstrapActions
+              - elasticmapreduce:List*
+              - elasticmapreduce:ListInstanceFleets
+              - elasticmapreduce:PutAutoScalingPolicy
+              - elasticmapreduce:DescribeCluster
+              - elasticmapreduce:SetTerminationProtection
+              - elasticmapreduce:AddInstanceGroups
+              - elasticmapreduce:ModifyInstanceFleet
+              - elasticmapreduce:ListInstanceGroups
+              - elasticmapreduce:DescribeStep
+              - elasticmapreduce:ListInstances
+              - elasticmapreduce:RemoveAutoScalingPolicy
+              - elasticmapreduce:ModifyInstanceGroups
+              - elasticmapreduce:DescribeEditor
+              - elasticmapreduce:AddInstanceFleet
+              - elasticmapreduce:AddJobFlowSteps
+              - elasticmapreduce:AddTags
+              - elasticmapreduce:TerminateJobFlows
+              - elasticmapreduce:CancelSteps
+            Resource:
+              - arn:aws:elasticmapreduce:us-east-1:*:editor/*
+              - arn:aws:elasticmapreduce:us-east-1:*:cluster/*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - risk
+                  - qit
+          
+          - Sid: IAMaccessForEMR
+            Effect: Allow
+            Action: iam:PassRole
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - risk
+                  - qit
+          
+          - Sid: EMRCreateRole
+            Effect: Allow
+            Action: iam:CreateServiceLinkedRole
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - risk
+                  - qit
+              StringLike:
+                iam:AWSServiceName:
+                - elasticmapreduce.amazonaws.com
+                - elasticmapreduce.amazonaws.com.cn
+                - spot.amazonaws.com
+          
+          - Sid: KafkaReadAccessToAll
+            Effect: Allow
+            Action:
+              - kafka:ListClusters
+              - kafka:ListNodes
+              - kafka:DescribeCluster
+              - kafka:GetBootstrapBrokers
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - boss
+                  - qit
+                  - commonviews
+                  - tot
+                  - ims
+          
+          - Sid: DataPipeLineAccess
+            Effect: Allow
+            Action:
+              - s3:List*
+              - dynamodb:DescribeTable
+              - rds:DescribeDBInstances
+              - rds:DescribeDBSecurityGroups
+              - redshift:DescribeClusters
+              - redshift:DescribeClusterSecurityGroups
+              - sns:ListTopics
+              - iam:ListRoles
+              - iam:GetRolePolicy
+              - iam:GetInstanceProfile
+              - iam:ListInstanceProfiles
+              - datapipeline:*
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - qit
+          
+          - Sid: DatePipeLineRoleAccess
+            Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - arn:aws:iam::xxxxxxxxx:role/DataPipelineDefaultRole
+              - arn:aws:iam::xxxxxxxxxx:role/DataPipelineDefaultResourceRole
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - qit        
+          - Sid: ListAccessToStepFunctions
+            Effect: Allow
+            Action:
+              - states:ListStateMachines
+            Resource: "*"
+              
+          - Sid: AccessToStepFunctions
+            Effect: Allow
+            Action:
+              - states:Describe*
+              - states:List*
+              - states:Get*
+              - states:StartExecution
+              - states:StopExecution
+            Resource:
+              - arn:aws:states:*:*:stateMachine:SC*
+              - arn:aws:states:*:*:execution:SC*:*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - qit            
+Outputs:
+  outEMRPolicyARN:
+    Description: EMR and Kafka Access
+    Value: !Ref resConsoleEMRPolicy
+    Export:
+      Name: emrconsolepolicy
+        

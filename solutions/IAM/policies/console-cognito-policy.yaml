@@ -1,0 +1,28 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cognito policies for AWS Console access'
+Resources:
+  resConsoleCognitoPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Cognito Access for ISG-Core
+      ManagedPolicyName: console-cognito-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: CognitoFull
+          Effect: Allow
+          Action:
+          - cognito-idp:*
+          Resource: "*"
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/team:
+              - core
+
+Outputs:
+  outS3PolicyARN:
+    Description: Cognito Pools policy for console
+    Value: !Ref resConsoleCognitoPolicy
+    Export:
+      Name: cognitoconsolepolicy              

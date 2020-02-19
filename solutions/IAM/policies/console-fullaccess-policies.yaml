@@ -1,0 +1,156 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Full access policies for SQS, Lambda, SNS, CloudWatch, Kinesis, API Gateway'
+Resources:
+  resConsoleFullAccessPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Full access to varoius services to all teams
+      ManagedPolicyName: console-fullaccess-policy
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AccessToSQS
+            Effect: Allow
+            Action:
+              - sqs:*
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - risk
+                  - core
+                  - boss
+                  - ims
+                  - repe
+                  - di
+                  - coll
+                  - commonviews
+                  - soa
+                  - dimensions
+                  - tot
+                  - ip
+
+          - Sid: AccessToLambda
+            Effect: Allow
+            Action:
+              - lambda:*
+              - tag:*
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - core
+                  - boss
+                  - di
+                  - ip
+                  - dimensions
+          - Sid: AccessToCloudWatch
+            Effect: Allow
+            Action:
+              - cloudwatch:*
+              - events:*
+              - logs:*
+            Resource: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+                  - qit
+                  - risk
+                  - boss
+                  - ims
+                  - repe
+                  - di
+                  - coll
+                  - commonviews
+                  - ip
+                  - dimensions
+                  - ateam
+                  - tot
+
+          - Sid: AccessToSNS
+            Effect: Allow
+            Action:
+              - sns:*
+            Resource: '*'
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team:
+                  - core
+                  - boss
+                  - ims
+                  - repe
+                  - di
+                  - coll
+                  - commonviews
+                  - soa
+                  - dimensions
+                  - qit
+                  - ip
+                  - tot
+          - Sid: AccessToElastiCache
+            Effect: Allow
+            Action:
+              - elasticache:Describe*
+              - elasticache:List*
+              
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - ims
+                  - tot
+                  - boss
+          - Sid: AccessToKinesis
+            Effect: Allow
+            Action:
+              - kinesisanalytics:*
+              - kinesis:*
+              - firehose:*
+              
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - tot
+                  - risk
+          - Sid: AccessToApiGateway
+            Effect: Allow
+            Action:
+              - apigateway:*
+              
+            Resource: arn:aws:apigateway:*::*
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - core                
+          - Sid: AccessToDynamoDB
+            Effect: Allow
+            Action:
+              - dynamodb:*
+              - dax:*
+              
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - core  
+          - Sid: AccessToElastiCacheForCore
+            Effect: Allow
+            Action:
+              - elasticache:*
+              
+            Resource: "*"
+            Condition:
+              StringEquals:
+                aws:PrincipalTag/team: 
+                  - core  
+                  
+Outputs:
+  outFullAccessPolicyARN:
+    Description: Full Access policies - sqs sns lambda cloudwatch
+    Value: !Ref resConsoleFullAccessPolicy
+    Export:
+      Name: fullaccessconsolepolicy
+        
