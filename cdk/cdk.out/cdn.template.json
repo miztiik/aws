@@ -59,6 +59,7 @@
                 ]
               },
               "Id": "origin1",
+              "OriginPath": "/build",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [

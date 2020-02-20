@@ -9,8 +9,8 @@ from msa.rds_stack import RDSStack
 from msa.ec2_stack import EC2Stack
 from msa.kms_stack import KMSStack
 #from msa.apigateway_stack import APIStack
-from msa.codepipeline import CodePipelineStack
-from msa.cognito import CognitoStack
+#from msa.codepipeline import CodePipelineStack
+#from msa.cognito import CognitoStack
 from msa.codepipeline_frontend import CodePipelineFrontendStack
 app = core.App()
 
@@ -21,13 +21,13 @@ kms_stack = KMSStack(app, "kms")
 ec2_stack = EC2Stack(app, "ec2", vpc=vpc_stack.vpc)
 rds_stack = RDSStack(app, "rds", vpc=vpc_stack.vpc, sg=ec2_stack.sg.security_group_id,kmskey=kms_stack.kms_rds.key_arn)
 #api_stack = APIStack(app, "apigw")
-codepipeline_stack = CodePipelineStack(app, "codepipeline", artifactbucket=core.Fn.import_value('lambda-bucket'),
-    buildlogsbucket=core.Fn.import_value('build-logs-bucket'),
-    env={'account':'xxxxxxxxx', 'region': 'us-east-1'})
+#codepipeline_stack = CodePipelineStack(app, "codepipeline", artifactbucket=core.Fn.import_value('lambda-bucket'),
+#    buildlogsbucket=core.Fn.import_value('build-logs-bucket'),
+#    env={'account':'xxxxxxxxx', 'region': 'us-east-1'})
 
 codepipeline_frontend_stack = CodePipelineFrontendStack(app, "codepipeline-frontend", buildlogsbucket=core.Fn.import_value('build-logs-bucket'), 
         webhostingbucket=core.Fn.import_value('webhosting-bucket'),
         distributionid=core.Fn.import_value('distribution-id'))
 
-cognito_stack = CognitoStack(app, "cognito")
+#cognito_stack = CognitoStack(app, "cognito")
 app.synth()

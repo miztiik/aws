@@ -18,12 +18,14 @@ class CDNStack(core.Stack):
                     cdn.Behavior(is_default_behavior=True)
                     #cdn.Behavior(is_default_behavior=False,path_pattern="/img/")
                 ],
+                origin_path="/build",
                 s3_origin_source=cdn.S3OriginConfig(
                     s3_bucket_source=bucketName,
                     origin_access_identity=cdn.OriginAccessIdentity(self,'webhosting-origin'),
                     
                 ),
-            )],
+            )
+            ],
             web_acl_id=webAclId
         )
         core.CfnOutput(self,'cdnid',

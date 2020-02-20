@@ -27,7 +27,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -67,7 +67,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -107,7 +107,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -147,7 +147,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -193,7 +193,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -233,7 +233,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -273,7 +273,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -313,7 +313,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -353,7 +353,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -393,7 +393,7 @@
                       "serverSideEncryptionConfiguration": [
                         {
                           "serverSideEncryptionByDefault": {
-                            "sseAlgorithm": "aws:kms"
+                            "sseAlgorithm": "AES256"
                           }
                         }
                       ]
@@ -484,6 +484,7 @@
                               ]
                             ]
                           },
+                          "originPath": "/build",
                           "s3OriginConfig": {
                             "originAccessIdentity": {
                               "Fn::Join": [
@@ -1264,9 +1265,7 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey",
-                            "kms:TagResource",
-                            "kms:UntagResource"
+                            "kms:GenerateDataKey"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1347,9 +1346,7 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey",
-                            "kms:TagResource",
-                            "kms:UntagResource"
+                            "kms:GenerateDataKey"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1803,555 +1800,6 @@
           "sgid": {
             "id": "sgid",
             "path": "rds/sgid"
-          }
-        }
-      },
-      "codepipeline": {
-        "id": "codepipeline",
-        "path": "codepipeline",
-        "children": {
-          "artifactbucket": {
-            "id": "artifactbucket",
-            "path": "codepipeline/artifactbucket"
-          },
-          "buildlogsbucket": {
-            "id": "buildlogsbucket",
-            "path": "codepipeline/buildlogsbucket"
-          },
-          "buildrole": {
-            "id": "buildrole",
-            "path": "codepipeline/buildrole"
-          },
-          "buildtemplate": {
-            "id": "buildtemplate",
-            "path": "codepipeline/buildtemplate",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "codepipeline/buildtemplate/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
-                  "aws:cdk:cloudformation:props": {
-                    "artifacts": {
-                      "type": "CODEPIPELINE"
-                    },
-                    "environment": {
-                      "type": "LINUX_CONTAINER",
-                      "image": "aws/codebuild/standard:3.0",
-                      "privilegedMode": false,
-                      "computeType": "BUILD_GENERAL1_SMALL",
-                      "environmentVariables": [
-                        {
-                          "name": "BUCKET",
-                          "type": "PLAINTEXT",
-                          "value": {
-                            "Fn::ImportValue": "lambda-bucket"
-                          }
-                        },
-                        {
-                          "name": "env",
-                          "type": "PLAINTEXT",
-                          "value": "dev"
-                        }
-                      ]
-                    },
-                    "serviceRole": "arn:aws:iam::xxxxxxxxxx:role/msa-codebuild-role",
-                    "source": {
-                      "type": "CODEPIPELINE",
-                      "buildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install -g serverless\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env\"\n      ]\n    },\n    \"post_build\": {\n      \"commands\": [\n        \"echo \\\"-----POST BUILD PHASE-----\\\" \",\n        \"echo \\\"SAM packaging completed on `date` \\\"\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"target/**/*\",\n      \"serverless.yaml\"\n    ]\n  },\n  \"cache\": {\n    \"paths\": [\n      \"/root/.cache/pip\"\n    ]\n  }\n}"
-                    },
-                    "cache": {
-                      "type": "S3",
-                      "location": {
-                        "Fn::Join": [
-                          "/",
-                          [
-                            {
-                              "Fn::ImportValue": "lambda-bucket"
-                            },
-                            "codebuild-cache"
-                          ]
-                        ]
-                      }
-                    },
-                    "description": "Package Serverless Project",
-                    "name": "DeployToDev"
-                  }
-                }
-              }
-            }
-          },
-          "deploy": {
-            "id": "deploy",
-            "path": "codepipeline/deploy",
-            "children": {
-              "Role": {
-                "id": "Role",
-                "path": "codepipeline/deploy/Role",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "codepipeline/deploy/Role/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                      "aws:cdk:cloudformation:props": {
-                        "assumeRolePolicyDocument": {
-                          "Statement": [
-                            {
-                              "Action": "sts:AssumeRole",
-                              "Effect": "Allow",
-                              "Principal": {
-                                "Service": "codebuild.amazonaws.com"
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        }
-                      }
-                    }
-                  },
-                  "DefaultPolicy": {
-                    "id": "DefaultPolicy",
-                    "path": "codepipeline/deploy/Role/DefaultPolicy",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "codepipeline/deploy/Role/DefaultPolicy/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                          "aws:cdk:cloudformation:props": {
-                            "policyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": [
-                                    "logs:CreateLogGroup",
-                                    "logs:CreateLogStream",
-                                    "logs:PutLogEvents"
-                                  ],
-                                  "Effect": "Allow",
-                                  "Resource": [
-                                    {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:",
-                                          {
-                                            "Ref": "AWS::Partition"
-                                          },
-                                          ":logs:us-east-1:xxxxxxxxx:log-group:/aws/codebuild/",
-                                          {
-                                            "Ref": "deploy9CB423FE"
-                                          }
-                                        ]
-                                      ]
-                                    },
-                                    {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:",
-                                          {
-                                            "Ref": "AWS::Partition"
-                                          },
-                                          ":logs:us-east-1:xxxxxxxxx:log-group:/aws/codebuild/",
-                                          {
-                                            "Ref": "deploy9CB423FE"
-                                          },
-                                          ":*"
-                                        ]
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "policyName": "deployRoleDefaultPolicy7D50557D",
-                            "roles": [
-                              {
-                                "Ref": "deployRoleA6859730"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "Resource": {
-                "id": "Resource",
-                "path": "codepipeline/deploy/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
-                  "aws:cdk:cloudformation:props": {
-                    "artifacts": {
-                      "type": "CODEPIPELINE"
-                    },
-                    "environment": {
-                      "type": "LINUX_CONTAINER",
-                      "image": "aws/codebuild/standard:3.0",
-                      "privilegedMode": false,
-                      "computeType": "BUILD_GENERAL1_SMALL",
-                      "environmentVariables": [
-                        {
-                          "name": "BUCKET",
-                          "type": "PLAINTEXT",
-                          "value": {
-                            "Fn::ImportValue": "lambda-bucket"
-                          }
-                        },
-                        {
-                          "name": "env",
-                          "type": "PLAINTEXT",
-                          "value": "dev"
-                        }
-                      ]
-                    },
-                    "serviceRole": {
-                      "Fn::GetAtt": [
-                        "deployRoleA6859730",
-                        "Arn"
-                      ]
-                    },
-                    "source": {
-                      "type": "CODEPIPELINE",
-                      "buildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install -g serverless\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env --package $BUCKET/target/$env\"\n      ]\n    }\n  }\n}"
-                    },
-                    "description": "Deploy Serverless Project",
-                    "name": "DeployFunction"
-                  }
-                }
-              }
-            }
-          },
-          "pipeline": {
-            "id": "pipeline",
-            "path": "codepipeline/pipeline",
-            "children": {
-              "Role": {
-                "id": "Role",
-                "path": "codepipeline/pipeline/Role",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "codepipeline/pipeline/Role/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                      "aws:cdk:cloudformation:props": {
-                        "assumeRolePolicyDocument": {
-                          "Statement": [
-                            {
-                              "Action": "sts:AssumeRole",
-                              "Effect": "Allow",
-                              "Principal": {
-                                "Service": "codepipeline.amazonaws.com"
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        }
-                      }
-                    }
-                  },
-                  "DefaultPolicy": {
-                    "id": "DefaultPolicy",
-                    "path": "codepipeline/pipeline/Role/DefaultPolicy",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "codepipeline/pipeline/Role/DefaultPolicy/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                          "aws:cdk:cloudformation:props": {
-                            "policyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": [
-                                    "s3:GetObject*",
-                                    "s3:GetBucket*",
-                                    "s3:List*",
-                                    "s3:DeleteObject*",
-                                    "s3:PutObject*",
-                                    "s3:Abort*"
-                                  ],
-                                  "Effect": "Allow",
-                                  "Resource": [
-                                    {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:",
-                                          {
-                                            "Ref": "AWS::Partition"
-                                          },
-                                          ":s3:::",
-                                          {
-                                            "Fn::ImportValue": "lambda-bucket"
-                                          }
-                                        ]
-                                      ]
-                                    },
-                                    {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:",
-                                          {
-                                            "Ref": "AWS::Partition"
-                                          },
-                                          ":s3:::",
-                                          {
-                                            "Fn::ImportValue": "lambda-bucket"
-                                          },
-                                          "/*"
-                                        ]
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Resource": {
-                                    "Fn::GetAtt": [
-                                      "pipelineDeployToDevCodePipelineActionRole250642B3",
-                                      "Arn"
-                                    ]
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "policyName": "pipelineRoleDefaultPolicy668B05DE",
-                            "roles": [
-                              {
-                                "Ref": "pipelineRole55399C5D"
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "Resource": {
-                "id": "Resource",
-                "path": "codepipeline/pipeline/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::CodePipeline::Pipeline",
-                  "aws:cdk:cloudformation:props": {
-                    "roleArn": {
-                      "Fn::GetAtt": [
-                        "pipelineRole55399C5D",
-                        "Arn"
-                      ]
-                    },
-                    "stages": [
-                      {
-                        "name": "Source",
-                        "actions": [
-                          {
-                            "name": "GitHubSource",
-                            "outputArtifacts": [
-                              {
-                                "name": "source"
-                              }
-                            ],
-                            "actionTypeId": {
-                              "category": "Source",
-                              "version": "1",
-                              "owner": "ThirdParty",
-                              "provider": "GitHub"
-                            },
-                            "configuration": {
-                              "Owner": "revstarconsulting",
-                              "Repo": "MSATechnology-NodeJS",
-                              "Branch": "master",
-                              "OAuthToken": "{{resolve:secretsmanager:dev/msa/github-token:SecretString:github-token::}}",
-                              "PollForSourceChanges": false
-                            },
-                            "runOrder": 1
-                          }
-                        ]
-                      },
-                      {
-                        "name": "DeployToDev",
-                        "actions": [
-                          {
-                            "name": "DeployToDev",
-                            "inputArtifacts": [
-                              {
-                                "name": "source"
-                              }
-                            ],
-                            "outputArtifacts": [
-                              {
-                                "name": "output"
-                              }
-                            ],
-                            "actionTypeId": {
-                              "category": "Build",
-                              "version": "1",
-                              "owner": "AWS",
-                              "provider": "CodeBuild"
-                            },
-                            "configuration": {
-                              "ProjectName": {
-                                "Ref": "buildtemplate367D7440"
-                              }
-                            },
-                            "runOrder": 1,
-                            "roleArn": {
-                              "Fn::GetAtt": [
-                                "pipelineDeployToDevCodePipelineActionRole250642B3",
-                                "Arn"
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    ],
-                    "artifactStore": {
-                      "type": "S3",
-                      "location": {
-                        "Fn::ImportValue": "lambda-bucket"
-                      }
-                    },
-                    "name": "DeployLambdaFunctions",
-                    "restartExecutionOnUpdate": true
-                  }
-                }
-              },
-              "Source": {
-                "id": "Source",
-                "path": "codepipeline/pipeline/Source",
-                "children": {
-                  "GitHubSource": {
-                    "id": "GitHubSource",
-                    "path": "codepipeline/pipeline/Source/GitHubSource",
-                    "children": {
-                      "WebhookResource": {
-                        "id": "WebhookResource",
-                        "path": "codepipeline/pipeline/Source/GitHubSource/WebhookResource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::CodePipeline::Webhook",
-                          "aws:cdk:cloudformation:props": {
-                            "authentication": "GITHUB_HMAC",
-                            "authenticationConfiguration": {
-                              "secretToken": "{{resolve:secretsmanager:dev/msa/github-token:SecretString:github-token::}}"
-                            },
-                            "filters": [
-                              {
-                                "jsonPath": "$.ref",
-                                "matchEquals": "refs/heads/{Branch}"
-                              }
-                            ],
-                            "targetAction": "GitHubSource",
-                            "targetPipeline": {
-                              "Ref": "pipelineDBECAE49"
-                            },
-                            "targetPipelineVersion": 1,
-                            "registerWithThirdParty": true
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "DeployToDev": {
-                "id": "DeployToDev",
-                "path": "codepipeline/pipeline/DeployToDev",
-                "children": {
-                  "DeployToDev": {
-                    "id": "DeployToDev",
-                    "path": "codepipeline/pipeline/DeployToDev/DeployToDev",
-                    "children": {
-                      "CodePipelineActionRole": {
-                        "id": "CodePipelineActionRole",
-                        "path": "codepipeline/pipeline/DeployToDev/DeployToDev/CodePipelineActionRole",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "codepipeline/pipeline/DeployToDev/DeployToDev/CodePipelineActionRole/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                              "aws:cdk:cloudformation:props": {
-                                "assumeRolePolicyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": "sts:AssumeRole",
-                                      "Effect": "Allow",
-                                      "Principal": {
-                                        "AWS": {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              "arn:",
-                                              {
-                                                "Ref": "AWS::Partition"
-                                              },
-                                              ":iam::xxxxxxxxx:root"
-                                            ]
-                                          ]
-                                        }
-                                      }
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                }
-                              }
-                            }
-                          },
-                          "DefaultPolicy": {
-                            "id": "DefaultPolicy",
-                            "path": "codepipeline/pipeline/DeployToDev/DeployToDev/CodePipelineActionRole/DefaultPolicy",
-                            "children": {
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "codepipeline/pipeline/DeployToDev/DeployToDev/CodePipelineActionRole/DefaultPolicy/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                                  "aws:cdk:cloudformation:props": {
-                                    "policyDocument": {
-                                      "Statement": [
-                                        {
-                                          "Action": [
-                                            "codebuild:BatchGetBuilds",
-                                            "codebuild:StartBuild",
-                                            "codebuild:StopBuild"
-                                          ],
-                                          "Effect": "Allow",
-                                          "Resource": {
-                                            "Fn::GetAtt": [
-                                              "buildtemplate367D7440",
-                                              "Arn"
-                                            ]
-                                          }
-                                        }
-                                      ],
-                                      "Version": "2012-10-17"
-                                    },
-                                    "policyName": "pipelineDeployToDevCodePipelineActionRoleDefaultPolicy43A7ADCE",
-                                    "roles": [
-                                      {
-                                        "Ref": "pipelineDeployToDevCodePipelineActionRole250642B3"
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       },
@@ -3116,55 +2564,6 @@
                         }
                       }
                     }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "cognito": {
-        "id": "cognito",
-        "path": "cognito",
-        "children": {
-          "msa": {
-            "id": "msa",
-            "path": "cognito/msa",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "cognito/msa/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
-                  "aws:cdk:cloudformation:props": {
-                    "autoVerifiedAttributes": [
-                      "email"
-                    ],
-                    "lambdaConfig": {},
-                    "usernameAttributes": [
-                      "email"
-                    ],
-                    "userPoolName": "msa-dev"
-                  }
-                }
-              }
-            }
-          },
-          "msaclient": {
-            "id": "msaclient",
-            "path": "cognito/msaclient",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "cognito/msaclient/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::Cognito::UserPoolClient",
-                  "aws:cdk:cloudformation:props": {
-                    "userPoolId": {
-                      "Ref": "msaB50981FE"
-                    },
-                    "clientName": "msa-client",
-                    "generateSecret": false
                   }
                 }
               }

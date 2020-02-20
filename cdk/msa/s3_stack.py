@@ -15,7 +15,7 @@ class S3Stack(core.Stack):
         #Lambda packages
         lambda_bucket=s3.Bucket(self, "lambda-packages",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-lambda-deploy-packages',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -34,7 +34,7 @@ class S3Stack(core.Stack):
         #images
         images_bucket=s3.Bucket(self, "images",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-images',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -53,7 +53,7 @@ class S3Stack(core.Stack):
         #AccessLogs
         accesslogs_bucket=s3.Bucket(self, "accesslogs",
             #access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-accesslogs',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -72,7 +72,7 @@ class S3Stack(core.Stack):
         #website hosting
         webhosting_bucket = s3.Bucket(self, "webhosting-bucket",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-website-hosting',
             server_access_logs_bucket=accesslogs_bucket,
             server_access_logs_prefix="logs/",
@@ -93,7 +93,7 @@ class S3Stack(core.Stack):
         #Frontend
         frontend_bucket=s3.Bucket(self, "frontend",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-frontend',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -112,7 +112,7 @@ class S3Stack(core.Stack):
         #Admin
         admin_bucket=s3.Bucket(self, "admin",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-admin',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -130,7 +130,7 @@ class S3Stack(core.Stack):
         #Build Logs
         build_logs_bucket=s3.Bucket(self, "build-logs",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-build-logs',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -150,7 +150,7 @@ class S3Stack(core.Stack):
         #FrontEnd Artifacts
         frontend_artifacts_bucket=s3.Bucket(self, "frontend-artifacts",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-frontend-artifacts',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -170,7 +170,7 @@ class S3Stack(core.Stack):
         #Admin Artifacts
         admin_artifacts_bucket=s3.Bucket(self, "admin-artifacts",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-admin-artifacts',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
@@ -190,7 +190,7 @@ class S3Stack(core.Stack):
         #CloudTrail Logs
         cloudtrail_bucket=s3.Bucket(self, "cloudtrail-logs",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.KMS_MANAGED,
+            encryption=s3.BucketEncryption.S3_MANAGED,
             bucket_name=prj_name+'-'+env_name+'-cloudtrail-logs',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
