@@ -67,6 +67,37 @@
         "aws:cdk:path": "rds/Dev_MySQL/SecurityGroup/from rdssgidBF2ADF68:{IndirectPort}"
       }
     },
+    "DevMySQLSecurityGroupfromrdsredissgidC437BA8CIndirectPort0A06CF93": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "IpProtocol": "tcp",
+        "Description": "Access from Redis",
+        "FromPort": {
+          "Fn::GetAtt": [
+            "DevMySQL4951FA01",
+            "Endpoint.Port"
+          ]
+        },
+        "GroupId": {
+          "Fn::GetAtt": [
+            "DevMySQLSecurityGroup853EE0CB",
+            "GroupId"
+          ]
+        },
+        "SourceSecurityGroupId": {
+          "Fn::ImportValue": "redis-sg-export"
+        },
+        "ToPort": {
+          "Fn::GetAtt": [
+            "DevMySQL4951FA01",
+            "Endpoint.Port"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "rds/Dev_MySQL/SecurityGroup/from rdsredissgidC437BA8C:{IndirectPort}"
+      }
+    },
     "DevMySQLSecret14769268": {
       "Type": "AWS::SecretsManager::Secret",
       "Properties": {

@@ -7,13 +7,13 @@ from aws_cdk import (
 
 class RDSStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, vpc,sg, kmskey, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str, vpc,sg,redissg, kmskey, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         rdskey = kms.Key.from_key_arn(self,"rdskey",
             key_arn=kmskey
         )
-
+        
         db_mysql = rds.DatabaseCluster(self,"Dev_MySQL",
             default_database_name="msadev",
             engine=rds.DatabaseClusterEngine.AURORA_MYSQL,
@@ -33,7 +33,10 @@ class RDSStack(core.Stack):
 
         )
         sgId = ec2.SecurityGroup.from_security_group_id(self,"sgid",sg)
+        redis_sg=ec2.SecurityGroup.from_security_group_id(self,"redissgid",redissg)
+
         db_mysql.connections.allow_default_port_from(sgId,"Access from Bastion")
+        db_mysql.connections.allow_default_port_from(redis_sg,"Access from Redis")
 
         
         

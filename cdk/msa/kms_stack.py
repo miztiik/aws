@@ -19,6 +19,15 @@ class KMSStack(core.Stack):
             alias_name="alias/{}-{}-key-rds".format(prj_name,env_name)
         )
 
+        kms_redis = kms.Key(self,"rediskey",
+            enable_key_rotation=True,
+            description="{}-{}-key-redis".format(prj_name,env_name)
+        )
+
+        kms_redis.add_alias(
+            alias_name="alias/{}-{}-key-redis".format(prj_name,env_name)
+        )
+
         kms_lambda = kms.Key(self,"lambdakey",
             enable_key_rotation=True,
             description="{}-{}-key-lambda".format(prj_name,env_name)
@@ -27,8 +36,20 @@ class KMSStack(core.Stack):
             alias_name="alias/{}-{}-key-lambda".format(prj_name,env_name)
         )
 
+        
+
         core.CfnOutput(self,"rdskeyexport",
             value=self.kms_rds.key_arn
+        )
+
+        core.CfnOutput(self,"lambdakeyexport",
+            value=kms_lambda.key_arn,
+            export_name="lambda-kms-key"
+        )
+
+        core.CfnOutput(self,"rediskeyexport",
+            value=kms_redis.key_arn,
+            export_name="redis-kms-key"
         )
         
     

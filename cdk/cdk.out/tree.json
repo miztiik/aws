@@ -1265,7 +1265,9 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey"
+                            "kms:GenerateDataKey",
+                            "kms:TagResource",
+                            "kms:UntagResource"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1320,6 +1322,89 @@
               }
             }
           },
+          "rediskey": {
+            "id": "rediskey",
+            "path": "kms/rediskey",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "kms/rediskey/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::KMS::Key",
+                  "aws:cdk:cloudformation:props": {
+                    "keyPolicy": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "kms:Create*",
+                            "kms:Describe*",
+                            "kms:Enable*",
+                            "kms:List*",
+                            "kms:Put*",
+                            "kms:Update*",
+                            "kms:Revoke*",
+                            "kms:Disable*",
+                            "kms:Get*",
+                            "kms:Delete*",
+                            "kms:ScheduleKeyDeletion",
+                            "kms:CancelKeyDeletion",
+                            "kms:GenerateDataKey",
+                            "kms:TagResource",
+                            "kms:UntagResource"
+                          ],
+                          "Effect": "Allow",
+                          "Principal": {
+                            "AWS": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":root"
+                                ]
+                              ]
+                            }
+                          },
+                          "Resource": "*"
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "msa-dev-key-redis",
+                    "enableKeyRotation": true
+                  }
+                }
+              },
+              "Alias": {
+                "id": "Alias",
+                "path": "kms/rediskey/Alias",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "kms/rediskey/Alias/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::KMS::Alias",
+                      "aws:cdk:cloudformation:props": {
+                        "aliasName": "alias/msa-dev-key-redis",
+                        "targetKeyId": {
+                          "Fn::GetAtt": [
+                            "rediskeyDCE72A85",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "lambdakey": {
             "id": "lambdakey",
             "path": "kms/lambdakey",
@@ -1346,7 +1431,9 @@
                             "kms:Delete*",
                             "kms:ScheduleKeyDeletion",
                             "kms:CancelKeyDeletion",
-                            "kms:GenerateDataKey"
+                            "kms:GenerateDataKey",
+                            "kms:TagResource",
+                            "kms:UntagResource"
                           ],
                           "Effect": "Allow",
                           "Principal": {
@@ -1405,6 +1492,14 @@
             "id": "rdskeyexport",
             "path": "kms/rdskeyexport"
           },
+          "lambdakeyexport": {
+            "id": "lambdakeyexport",
+            "path": "kms/lambdakeyexport"
+          },
+          "rediskeyexport": {
+            "id": "rediskeyexport",
+            "path": "kms/rediskeyexport"
+          },
           "Exports": {
             "id": "Exports",
             "path": "kms/Exports",
@@ -1414,6 +1509,92 @@
                 "path": "kms/Exports/Output{\"Fn::GetAtt\":[\"dbkey7DD042FD\",\"Arn\"]}"
               }
             }
+          }
+        }
+      },
+      "redis": {
+        "id": "redis",
+        "path": "redis",
+        "children": {
+          "vpc": {
+            "id": "vpc",
+            "path": "redis/vpc"
+          },
+          "rdsSG": {
+            "id": "rdsSG",
+            "path": "redis/rdsSG",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "redis/rdsSG/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "SG for Redis Cache",
+                    "groupName": "RedisSG",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "tcp",
+                        "fromPort": 0,
+                        "toPort": 65535,
+                        "description": "SSH Access"
+                      }
+                    ],
+                    "vpcId": {
+                      "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "redis-sg": {
+            "id": "redis-sg",
+            "path": "redis/redis-sg",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::ElastiCache::SubnetGroup",
+              "aws:cdk:cloudformation:props": {
+                "description": "subnet group for redis",
+                "subnetIds": []
+              }
+            }
+          },
+          "redis": {
+            "id": "redis",
+            "path": "redis/redis",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::ElastiCache::CacheCluster",
+              "aws:cdk:cloudformation:props": {
+                "cacheNodeType": "cache.t2.small",
+                "engine": "redis",
+                "numCacheNodes": 1,
+                "autoMinorVersionUpgrade": true,
+                "cacheSubnetGroupName": {
+                  "Ref": "redissg"
+                },
+                "clusterName": "msa-redis-dev",
+                "vpcSecurityGroupIds": [
+                  {
+                    "Fn::GetAtt": [
+                      "rdsSG9503FF97",
+                      "GroupId"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "redissg": {
+            "id": "redissg",
+            "path": "redis/redissg"
           }
         }
       },
@@ -1678,6 +1859,38 @@
                         }
                       }
                     }
+                  },
+                  "from rdsredissgidC437BA8C:{IndirectPort}": {
+                    "id": "from rdsredissgidC437BA8C:{IndirectPort}",
+                    "path": "rds/Dev_MySQL/SecurityGroup/from rdsredissgidC437BA8C:{IndirectPort}",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                      "aws:cdk:cloudformation:props": {
+                        "ipProtocol": "tcp",
+                        "description": "Access from Redis",
+                        "fromPort": {
+                          "Fn::GetAtt": [
+                            "DevMySQL4951FA01",
+                            "Endpoint.Port"
+                          ]
+                        },
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "DevMySQLSecurityGroup853EE0CB",
+                            "GroupId"
+                          ]
+                        },
+                        "sourceSecurityGroupId": {
+                          "Fn::ImportValue": "redis-sg-export"
+                        },
+                        "toPort": {
+                          "Fn::GetAtt": [
+                            "DevMySQL4951FA01",
+                            "Endpoint.Port"
+                          ]
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -1800,6 +2013,10 @@
           "sgid": {
             "id": "sgid",
             "path": "rds/sgid"
+          },
+          "redissgid": {
+            "id": "redissgid",
+            "path": "rds/redissgid"
           }
         }
       },

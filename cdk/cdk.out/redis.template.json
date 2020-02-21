@@ -1,0 +1,83 @@
+{
+  "Resources": {
+    "rdsSG9503FF97": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for Redis Cache",
+        "GroupName": "RedisSG",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "SSH Access",
+            "FromPort": 0,
+            "IpProtocol": "tcp",
+            "ToPort": 65535
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "vpc:ExportsOutputRefdevVPC524BF54C27F5E3C9"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "redis/rdsSG/Resource"
+      }
+    },
+    "redissg": {
+      "Type": "AWS::ElastiCache::SubnetGroup",
+      "Properties": {
+        "Description": "subnet group for redis",
+        "SubnetIds": []
+      },
+      "Metadata": {
+        "aws:cdk:path": "redis/redis-sg"
+      }
+    },
+    "redis": {
+      "Type": "AWS::ElastiCache::CacheCluster",
+      "Properties": {
+        "CacheNodeType": "cache.t2.small",
+        "Engine": "redis",
+        "NumCacheNodes": 1,
+        "AutoMinorVersionUpgrade": true,
+        "CacheSubnetGroupName": {
+          "Ref": "redissg"
+        },
+        "ClusterName": "msa-redis-dev",
+        "VpcSecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "rdsSG9503FF97",
+              "GroupId"
+            ]
+          }
+        ]
+      },
+      "DependsOn": [
+        "redissg"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "redis/redis"
+      }
+    }
+  },
+  "Outputs": {
+    "redissg": {
+      "Value": {
+        "Fn::GetAtt": [
+          "rdsSG9503FF97",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": "redis-sg-export"
+      }
+    }
+  }
+}

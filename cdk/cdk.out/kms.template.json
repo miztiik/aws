@@ -19,7 +19,9 @@
                 "kms:Delete*",
                 "kms:ScheduleKeyDeletion",
                 "kms:CancelKeyDeletion",
-                "kms:GenerateDataKey"
+                "kms:GenerateDataKey",
+                "kms:TagResource",
+                "kms:UntagResource"
               ],
               "Effect": "Allow",
               "Principal": {
@@ -69,6 +71,77 @@
         "aws:cdk:path": "kms/dbkey/Alias/Resource"
       }
     },
+    "rediskeyDCE72A85": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:GenerateDataKey",
+                "kms:TagResource",
+                "kms:UntagResource"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":iam::",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              },
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Description": "msa-dev-key-redis",
+        "EnableKeyRotation": true
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "kms/rediskey/Resource"
+      }
+    },
+    "rediskeyAlias766041F7": {
+      "Type": "AWS::KMS::Alias",
+      "Properties": {
+        "AliasName": "alias/msa-dev-key-redis",
+        "TargetKeyId": {
+          "Fn::GetAtt": [
+            "rediskeyDCE72A85",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "kms/rediskey/Alias/Resource"
+      }
+    },
     "lambdakey08903E42": {
       "Type": "AWS::KMS::Key",
       "Properties": {
@@ -88,7 +161,9 @@
                 "kms:Delete*",
                 "kms:ScheduleKeyDeletion",
                 "kms:CancelKeyDeletion",
-                "kms:GenerateDataKey"
+                "kms:GenerateDataKey",
+                "kms:TagResource",
+                "kms:UntagResource"
               ],
               "Effect": "Allow",
               "Principal": {
@@ -146,6 +221,28 @@
           "dbkey7DD042FD",
           "Arn"
         ]
+      }
+    },
+    "lambdakeyexport": {
+      "Value": {
+        "Fn::GetAtt": [
+          "lambdakey08903E42",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "lambda-kms-key"
+      }
+    },
+    "rediskeyexport": {
+      "Value": {
+        "Fn::GetAtt": [
+          "rediskeyDCE72A85",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "redis-kms-key"
       }
     },
     "ExportsOutputFnGetAttdbkey7DD042FDArn4BEAD101": {
