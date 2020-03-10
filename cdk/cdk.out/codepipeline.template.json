@@ -1,5 +1,129 @@
 {
   "Resources": {
+    "buildtemplateRoleDB5A7929": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/buildtemplate/Role/Resource"
+      }
+    },
+    "buildtemplateRoleDefaultPolicyE6688EC3": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Fn::ImportValue": "lambda-bucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":logs:us-east-1:748496058110:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "buildtemplate367D7440"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":logs:us-east-1:748496058110:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "buildtemplate367D7440"
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "buildtemplateRoleDefaultPolicyE6688EC3",
+        "Roles": [
+          {
+            "Ref": "buildtemplateRoleDB5A7929"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "codepipeline/buildtemplate/Role/DefaultPolicy/Resource"
+      }
+    },
     "buildtemplate367D7440": {
       "Type": "AWS::CodeBuild::Project",
       "Properties": {
@@ -26,9 +150,14 @@
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
         },
-        "ServiceRole": "arn:aws:iam::xxxxxxxxxx:role/msa-codebuild-role",
+        "ServiceRole": {
+          "Fn::GetAtt": [
+            "buildtemplateRoleDB5A7929",
+            "Arn"
+          ]
+        },
         "Source": {
-          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install -g serverless\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env\"\n      ]\n    },\n    \"post_build\": {\n      \"commands\": [\n        \"echo \\\"-----POST BUILD PHASE-----\\\" \",\n        \"echo \\\"SAM packaging completed on `date` \\\"\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"target/**/*\",\n      \"serverless.yaml\"\n    ]\n  },\n  \"cache\": {\n    \"paths\": [\n      \"/root/.cache/pip\"\n    ]\n  }\n}",
+          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install --silent --no-progress npm -g\",\n        \"npm install --silent --no-progress serverless -g\"\n      ]\n    },\n    \"pre_build\": {\n      \"commands\": [\n        \"echo \\\"----PRE BUILD PHASE----\\\" \",\n        \"npm install --no-progress --silent\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env\"\n      ]\n    },\n    \"post_build\": {\n      \"commands\": [\n        \"echo \\\"-----POST BUILD PHASE-----\\\" \",\n        \"echo \\\"SAM packaging completed on `date` \\\"\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"target/**/*\",\n      \"serverless.yaml\"\n    ]\n  },\n  \"cache\": {\n    \"paths\": [\n      \"/root/.cache/pip\"\n    ]\n  }\n}",
           "Type": "CODEPIPELINE"
         },
         "Cache": {
@@ -93,7 +222,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:us-east-1:xxxxxxxxx:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:748496058110:log-group:/aws/codebuild/",
                       {
                         "Ref": "deploy9CB423FE"
                       }
@@ -108,7 +237,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":logs:us-east-1:xxxxxxxxx:log-group:/aws/codebuild/",
+                      ":logs:us-east-1:748496058110:log-group:/aws/codebuild/",
                       {
                         "Ref": "deploy9CB423FE"
                       },
@@ -165,7 +294,7 @@
           ]
         },
         "Source": {
-          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install -g serverless\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env --package $BUCKET/target/$env\"\n      ]\n    }\n  }\n}",
+          "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"commands\": [\n        \"echo \\\"----INSTALL PHASE----\\\" \",\n        \"npm install --no-progress --silent serverless -g\"\n      ]\n    },\n    \"pre_build\": {\n      \"commands\": [\n        \"echo \\\"----PRE BUILD PHASE----\\\" \",\n        \"npm install --no-progress --silent -g\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"-----BUILD PHASE------\\\"\",\n        \"serverless deploy --stage $env --package $BUCKET/target/$env\"\n      ]\n    }\n  }\n}",
           "Type": "CODEPIPELINE"
         },
         "Description": "Deploy Serverless Project",
@@ -400,7 +529,7 @@
                       {
                         "Ref": "AWS::Partition"
                       },
-                      ":iam::xxxxxxxxx:root"
+                      ":iam::748496058110:root"
                     ]
                   ]
                 }

@@ -35,7 +35,7 @@ class CodePipelineStack(core.Stack):
                     'env': cb.BuildEnvironmentVariable(value='dev')
                 },
             ),
-            role=dev_codebuild_role,
+            role=get_build_dev_role,
             cache=cb.Cache.bucket(artifact_bucket,prefix='codebuild-cache'),
             build_spec=cb.BuildSpec.from_object({
                 'version': '0.2',
@@ -43,7 +43,14 @@ class CodePipelineStack(core.Stack):
                     'install': {
                         'commands':[
                             'echo "----INSTALL PHASE----" ',
-                            'npm install -g serverless'
+                            'npm install --silent --no-progress npm -g',
+                            'npm install --silent --no-progress serverless -g'
+                        ]
+                    },
+                    'pre_build': {
+                        'commands':[
+                            'echo "----PRE BUILD PHASE----" ',
+                            'npm install --no-progress --silent'
                         ]
                     },
                     'build': {
@@ -90,7 +97,13 @@ class CodePipelineStack(core.Stack):
                     'install': {
                         'commands':[
                             'echo "----INSTALL PHASE----" ',
-                            'npm install -g serverless'
+                            'npm install --no-progress --silent serverless -g'
+                        ]
+                    },
+                    'pre_build': {
+                        'commands':[
+                            'echo "----PRE BUILD PHASE----" ',
+                            'npm install --no-progress --silent -g'
                         ]
                     },
                     'build': {
