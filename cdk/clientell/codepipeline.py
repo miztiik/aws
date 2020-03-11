@@ -25,7 +25,41 @@ class CodePipelineStack(core.Stack):
             encryption=s3.BucketEncryption.S3_MANAGED,
             removal_policy=core.RemovalPolicy.DESTROY
         )
-        
+
+        deploy_bucket = s3.Bucket(self, "depbucket",
+            access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            removal_policy=core.RemovalPolicy.DESTROY
+        )
+
+        build_project = cb.PipelineProject(self,'build',
+            project_name="Build",
+            description="Build Laravel app",
+            environment=cb.BuildEnvironment(
+                build_image=cb.LinuxBuildImage.from_docker_registry('nixsupport/clientell'),
+                environment_variables={
+                    'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name)
+                },
+            ),
+            build_spec=cb.BuildSpec.from_object({
+                'version': '0.2',
+                'phases': {
+                    'build': {
+                        'commands': [
+                            'echo "----BUILD PHASE----" ',
+                            'composer install'
+                        ]
+                    }
+                },
+                'artifacts': {
+                    'files': [
+                        '**/*'
+                    ]
+                }
+
+            })
+        )
+
         application_name = cd.ServerApplication.from_server_application_name(
             self,'appname',
             server_application_name="Clientell"
@@ -62,14 +96,23 @@ class CodePipelineStack(core.Stack):
                 #trigger=cp_actions.GitHubTrigger.NONE
             )
         ])
-        
-        pipeline.add_stage(stage_name='DeployToStage',actions=[
-            cp_actions.CodeDeployServerDeployAction(
-                deployment_group=dep_group,
+        pipeline.add_stage(stage_name='Build', actions=[
+            cp_actions.CodeBuildAction(
+                action_name='Build',
                 input=sourceOutput,
-                action_name="DeployToStage"
+                project=build_project,
+                outputs=[buildOutput]
             )
         ])
 
+       
+        pipeline.add_stage(stage_name='DeployToStage',actions=[
+            cp_actions.CodeDeployServerDeployAction(
+                deployment_group=dep_group,
+                input=buildOutput,
+                action_name="DeployToStage"
+            )
+        ])
+        
         
         artifact_bucket.grant_read_write(pipeline.role)
