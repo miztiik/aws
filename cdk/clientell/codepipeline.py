@@ -26,12 +26,6 @@ class CodePipelineStack(core.Stack):
             removal_policy=core.RemovalPolicy.DESTROY
         )
 
-        deploy_bucket = s3.Bucket(self, "depbucket",
-            access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            encryption=s3.BucketEncryption.S3_MANAGED,
-            removal_policy=core.RemovalPolicy.DESTROY
-        )
-
         build_project = cb.PipelineProject(self,'build',
             project_name="Build",
             description="Build Laravel app",

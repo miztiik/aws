@@ -20,26 +20,6 @@
         "aws:cdk:path": "codepipeline/artifactbucket/Resource"
       }
     },
-    "depbucketC2D38245": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "AccessControl": "BucketOwnerFullControl",
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        }
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "codepipeline/depbucket/Resource"
-      }
-    },
     "buildRoleD55766F0": {
       "Type": "AWS::IAM::Role",
       "Properties": {

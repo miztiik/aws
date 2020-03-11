@@ -19,26 +19,7 @@
             "type": "aws:cdk:logicalId",
             "data": "artifactbucket6F9F48A0",
             "trace": [
-              "new Bucket (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:366:26)",
-              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
-              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
-              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
-              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
-              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
-              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
-              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
-              "runCallback (timers.js:705:18)",
-              "tryOnImmediate (timers.js:676:5)",
-              "processImmediate (timers.js:658:5)"
-            ]
-          }
-        ],
-        "/codepipeline/depbucket/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "depbucketC2D38245",
-            "trace": [
-              "new Bucket (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:366:26)",
+              "new Bucket (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:366:26)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -57,9 +38,9 @@
             "type": "aws:cdk:logicalId",
             "data": "buildRoleD55766F0",
             "trace": [
-              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
-              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:238:35)",
-              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:238:35)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -78,11 +59,11 @@
             "type": "aws:cdk:logicalId",
             "data": "buildRoleDefaultPolicy62B19ADE",
             "trace": [
-              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
-              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
-              "PipelineProject.addToRolePolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:46:23)",
-              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:305:14)",
-              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "PipelineProject.addToRolePolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:46:23)",
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:305:14)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -101,8 +82,8 @@
             "type": "aws:cdk:logicalId",
             "data": "buildB0080CFE",
             "trace": [
-              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:276:26)",
-              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:276:26)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -121,8 +102,8 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineRole303BD16F",
             "trace": [
-              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
-              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:101:35)",
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:101:35)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -141,13 +122,13 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineRoleDefaultPolicy5947DC2F",
             "trace": [
-              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
-              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
-              "Function.addToPrincipal (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:57:65)",
-              "Function.addToPrincipalOrResource (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:31:30)",
-              "Bucket.grant (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:275:29)",
-              "Bucket.grantReadWrite (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:224:21)",
-              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:114:29)",
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "Function.addToPrincipal (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:57:65)",
+              "Function.addToPrincipalOrResource (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:31:30)",
+              "Bucket.grant (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:275:29)",
+              "Bucket.grantReadWrite (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:224:21)",
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:114:29)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -166,7 +147,7 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipeline2AB93AF4",
             "trace": [
-              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:104:30)",
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:104:30)",
               "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
@@ -185,13 +166,13 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineSourceGitHubSourceWebhookResourceD24140E2",
             "trace": [
-              "GitHubSourceAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\github\\source-action.js:44:13)",
-              "GitHubSourceAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
-              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
-              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
-              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
-              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
-              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "GitHubSourceAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\github\\source-action.js:44:13)",
+              "GitHubSourceAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
               "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
@@ -211,13 +192,13 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineBuildCodePipelineActionRole7C0C67BB",
             "trace": [
-              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
-              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
-              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
-              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
-              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
-              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
-              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
               "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
@@ -237,15 +218,15 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineBuildCodePipelineActionRoleDefaultPolicy8E1888DF",
             "trace": [
-              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
-              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
-              "CodeBuildAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codebuild\\build-action.js:67:22)",
-              "CodeBuildAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
-              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
-              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
-              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
-              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
-              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "CodeBuildAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codebuild\\build-action.js:67:22)",
+              "CodeBuildAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
               "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
@@ -265,13 +246,13 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineDeployToStageCodePipelineActionRoleDBC24008",
             "trace": [
-              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
-              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
-              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
-              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
-              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
-              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
-              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
               "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
@@ -291,15 +272,305 @@
             "type": "aws:cdk:logicalId",
             "data": "stagepipelineDeployToStageCodePipelineActionRoleDefaultPolicy8FA2CD67",
             "trace": [
-              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
-              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
-              "CodeDeployServerDeployAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codedeploy\\server-deploy-action.js:22:22)",
-              "CodeDeployServerDeployAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
-              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
-              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
-              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
-              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
-              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-TPgTtE\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "CodeDeployServerDeployAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codedeploy\\server-deploy-action.js:22:22)",
+              "CodeDeployServerDeployAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
+              "Kernel._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8198:20)",
+              "Kernel.invoke (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7588:26)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ]
+      }
+    },
+    "codepipelineprod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "codepipelineprod.template.json"
+      },
+      "metadata": {
+        "/codepipelineprod/artifactbucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "artifactbucket6F9F48A0",
+            "trace": [
+              "new Bucket (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:366:26)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/buildprod/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "buildprodRoleC73997BD",
+            "trace": [
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:238:35)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/buildprod/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "buildprodRoleDefaultPolicy4E0944FF",
+            "trace": [
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "PipelineProject.addToRolePolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:46:23)",
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:305:14)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/buildprod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "buildprod9153B593",
+            "trace": [
+              "new Project (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\project.js:276:26)",
+              "new PipelineProject (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codebuild\\lib\\pipeline-project.js:11:9)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineRoleAE6119B1",
+            "trace": [
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:101:35)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineRoleDefaultPolicy67B1B6F4",
+            "trace": [
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "Function.addToPrincipal (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:57:65)",
+              "Function.addToPrincipalOrResource (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\grant.js:31:30)",
+              "Bucket.grant (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:275:29)",
+              "Bucket.grantReadWrite (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-s3\\lib\\bucket.js:224:21)",
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:114:29)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipeline39A92E1C",
+            "trace": [
+              "new Pipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:104:30)",
+              "obj._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:49)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "Kernel._create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7762:26)",
+              "Kernel.create (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7509:21)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Source/GitHubSource/WebhookResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineSourceGitHubSourceWebhookResource4407052F",
+            "trace": [
+              "GitHubSourceAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\github\\source-action.js:44:13)",
+              "GitHubSourceAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
+              "Kernel._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8198:20)",
+              "Kernel.invoke (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7588:26)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Build/Build/CodePipelineActionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineBuildCodePipelineActionRole85D2D32D",
+            "trace": [
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
+              "Kernel._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8198:20)",
+              "Kernel.invoke (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7588:26)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/Build/Build/CodePipelineActionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineBuildCodePipelineActionRoleDefaultPolicy4B15D27A",
+            "trace": [
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "CodeBuildAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codebuild\\build-action.js:67:22)",
+              "CodeBuildAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
+              "Kernel._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8198:20)",
+              "Kernel.invoke (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7588:26)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/DeployToProduction/DeployToProduction/CodePipelineActionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineDeployToProductionCodePipelineActionRoleCEE8C25B",
+            "trace": [
+              "new Role (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:36:22)",
+              "Pipeline.getRoleForAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:351:26)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:209:33)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
+              "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
+              "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
+              "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",
+              "Kernel._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8198:20)",
+              "Kernel.invoke (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7588:26)",
+              "KernelHost.processRequest (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7296:28)",
+              "KernelHost.run (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7236:14)",
+              "Immediate.setImmediate [as _onImmediate] (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7239:37)",
+              "runCallback (timers.js:705:18)",
+              "tryOnImmediate (timers.js:676:5)",
+              "processImmediate (timers.js:658:5)"
+            ]
+          }
+        ],
+        "/codepipelineprod/prdpipeline/DeployToProduction/DeployToProduction/CodePipelineActionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "prdpipelineDeployToProductionCodePipelineActionRoleDefaultPolicy4C34047A",
+            "trace": [
+              "new Policy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\policy.js:30:26)",
+              "Role.addToPolicy (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-iam\\lib\\role.js:146:34)",
+              "CodeDeployServerDeployAction.bound (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\codedeploy\\server-deploy-action.js:22:22)",
+              "CodeDeployServerDeployAction.bind (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline-actions\\lib\\action.js:46:21)",
+              "Pipeline._attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:213:37)",
+              "Stage.attachActionToPipeline (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:108:31)",
+              "Stage.addAction (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:67:33)",
+              "new Stage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\stage.js:25:18)",
+              "Pipeline.addStage (C:\\Users\\balkaran\\AppData\\Local\\Temp\\jsii-kernel-UmvvpN\\node_modules\\@aws-cdk\\aws-codepipeline\\lib\\pipeline.js:161:23)",
               "_wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:51)",
               "Kernel._wrapSandboxCode (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:8222:20)",
               "ret._ensureSync (C:\\python37\\lib\\site-packages\\jsii\\_embedded\\jsii\\jsii-runtime.js:7589:25)",

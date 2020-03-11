@@ -36,6 +36,34 @@ class CodePipelineProdStack(core.Stack):
         github_token = core.SecretValue.secrets_manager(
             'stg/clientell/github-token', json_field='github-token'
         )
+
+        build_project = cb.PipelineProject(self,'buildprod',
+            project_name="BuildProd",
+            description="Build Laravel app in Prod",
+            environment=cb.BuildEnvironment(
+                build_image=cb.LinuxBuildImage.from_docker_registry('nixsupport/clientell'),
+                environment_variables={
+                    'BUCKET': cb.BuildEnvironmentVariable(value=artifact_bucket.bucket_name)
+                },
+            ),
+            build_spec=cb.BuildSpec.from_object({
+                'version': '0.2',
+                'phases': {
+                    'build': {
+                        'commands': [
+                            'echo "----BUILD PHASE----" ',
+                            'composer install'
+                        ]
+                    }
+                },
+                'artifacts': {
+                    'files': [
+                        '**/*'
+                    ]
+                }
+
+            })
+        )
         
         pipeline = cp.Pipeline(self, "prdpipeline",
             pipeline_name="DeployToProd",
@@ -58,10 +86,19 @@ class CodePipelineProdStack(core.Stack):
             )
         ])
 
+        pipeline.add_stage(stage_name='Build', actions=[
+            cp_actions.CodeBuildAction(
+                action_name='Build',
+                input=sourceOutput,
+                project=build_project,
+                outputs=[buildOutput]
+            )
+        ])
+
         pipeline.add_stage(stage_name='DeployToProduction',actions=[
             cp_actions.CodeDeployServerDeployAction(
                 deployment_group=dep_group,
-                input=sourceOutput,
+                input=buildOutput,
                 action_name="DeployToProduction"
             )
         ])
